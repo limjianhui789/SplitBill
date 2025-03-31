@@ -1,0 +1,23 @@
+{
+  "name": "split-invoice",
+  "version": "1.0.0",
+  "description": "An easy way to split restaurant bills and track expenses",
+  "main": "index.html",
+  "scripts": {
+    "dev": "tailwindcss -i ./css/tailwind.css -o ./css/tailwind.output.css --watch",
+    "build": "tailwindcss -i ./css/tailwind.css -o ./css/tailwind.output.css --minify",
+    "serve": "npx serve ."
+  },
+  "keywords": [
+    "bill-splitting",
+    "expense-tracking",
+    "restaurant-bills"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24",
+    "tailwindcss": "^3.3.2"
+  }
+} 
