@@ -1,0 +1,20 @@
+/* Tailwind CSS for production use */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Add custom Tailwind configurations here */
+@layer base {
+  :root {
+    --color-primary: 139 92 246; /* Purple */
+    --color-accent-green: 74 222 128; 
+    --color-accent-red: 239 68 68;
+    --color-accent-purple: 139 92 246;
+    --color-accent-blue: 59 130 246;
+    --color-dark-bg: 18 18 20;
+    --color-dark-card: 30 30 36;
+  }
+}
+
+/* To use this file properly, run Tailwind CLI or PostCSS with Tailwind plugin */
+/* For development, the CDN is still used in the HTML file */ 

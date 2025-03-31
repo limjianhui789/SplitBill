@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>SplitInvoice - Statistics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta charset="UTF-8">
+  <meta name="description" content="SplitInvoice - An easy way to split your restaurant bills and track expenses">
+  <meta name="keywords" content="bill split, invoice, expense tracking, restaurant bill">
+  <meta name="theme-color" content="#8B5CF6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <!-- Tailwind CSS -->
+  <link rel="stylesheet" href="css/tailwind.output.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/custom.css">
+  
+  <!-- Chart.js for statistics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+  
+  <!-- Animation library -->
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+  
+  <!-- Hammer.js for touch gestures -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  
+  <!-- Our JavaScript Files -->
+  <script src="js/utils.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/dropdown-portal.js"></script>
+  <script src="js/statistics.js"></script>
+</head>
+
+<body class="bg-gray-50 dark:bg-dark-bg text-gray-900 dark:text-white transition-colors duration-200 mobile-full-height">
+  <!-- Navigation Bar -->
+  <nav class="app-navbar bg-white/80 dark:bg-dark-card/80 shadow-md sticky top-0 z-40 backdrop-blur-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex">
+          <div class="flex-shrink-0 flex items-center">
+            <a href="index.html" class="flex items-center">
+              <i class="fas fa-arrow-left mr-2 text-accent-purple"></i>
+              <span class="text-accent-purple dark:text-accent-purple text-xl font-bold">Statistics</span>
+            </a>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button id="filterBtn" class="btn-icon">
+            <i class="fas fa-filter"></i>
+          </button>
+          <button id="themeToggle" class="btn-icon">
+            <i class="fas fa-moon dark:hidden"></i>
+            <i class="fas fa-sun hidden dark:block"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="min-h-screen py-4 px-4 pb-24 safe-bottom">
+    <div class="app-container max-w-lg mx-auto">
+      <!-- Added fallback for no statistics data available -->
+      <div id="noDataFallback" class="p-6 bg-white dark:bg-dark-card rounded-lg shadow-md my-4 hidden" data-aos="fade-up">
+        <div class="flex flex-col items-center justify-center">
+          <i class="fas fa-chart-bar fa-3x text-gray-400 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">No Data Available</h2>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">It looks like there are no statistics data available right now. Please check back later or try refreshing.</p>
+          <button onclick="Statistics.reloadData()" class="btn btn-primary">
+            <i class="fas fa-sync-alt mr-2"></i> Refresh Data
+          </button>
+        </div>
+      </div>
+
+      <!-- Time Period Selection -->
+      <div class="tab-nav" data-aos="fade-down" data-aos-delay="100">
+        <button class="tab-item active" data-period="week">Week</button>
+        <button class="tab-item" data-period="month">Month</button>
+        <button class="tab-item" data-period="year">Year</button>
+        <button class="tab-item" data-period="all">All Time</button>
+      </div>
+      
+      <!-- Health Statistics Cards -->
+      <div class="health-stats-grid" data-aos="fade-up" data-aos-delay="120">
+        <!-- Recent Bill Card -->
+        <div class="health-stats-card">
+          <div class="health-stats-header">
+            <p>Recent bill</p>
+            <p>05:33 PM</p>
+          </div>
+          <div class="health-stats-value">
+            $0.00 <span class="health-stats-label">total</span>
+            <i class="fas fa-receipt blood-drop"></i>
+          </div>
+        </div>
+        
+        <!-- Monthly Progress Card -->
+        <div class="health-stats-card">
+          <div class="health-stats-header">
+            <p>Monthly Budget</p>
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="monthly-budget-value">$133</div>
+              <div class="monthly-budget-text">of $650</div>
+              <div class="monthly-budget-left">$518 left</div>
+            </div>
+            <div class="health-progress-circle">
+              <svg width="100%" height="100%" viewBox="0 0 100 100">
+                <circle class="bg" cx="50" cy="50" r="40"></circle>
+                <circle class="progress" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="200"></circle>
+              </svg>
+              <div class="health-progress-text">
+                <div class="health-progress-percentage">20%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Spending Trend Chart -->
+      <div class="stats-card stats-card-dark" data-aos="fade-up" data-aos-delay="150">
+        <div class="stats-header">
+          <h3 class="stats-title">Spending Trend</h3>
+          <span class="stats-period">Avg this week $120</span>
+        </div>
+        
+        <div class="flex mb-3">
+          <div class="mr-4 flex items-center">
+            <div class="w-3 h-3 rounded-full bg-blue-400 mr-2"></div>
+            <span class="text-sm">Personal</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-3 h-3 rounded-full bg-teal-400 mr-2"></div>
+            <span class="text-sm">Group</span>
+          </div>
+        </div>
+        
+        <div class="chart-container" style="position: relative; height: 200px;">
+          <canvas id="spendingTrendChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- Split Distribution -->
+      <div class="stats-card stats-card-dark" data-aos="fade-up" data-aos-delay="180">
+        <div class="stats-header">
+          <h3 class="stats-title">Split Distribution</h3>
+          <span class="stats-period">Avg this week $127</span>
+        </div>
+        
+        <div class="flex mb-3">
+          <div class="mr-4 flex items-center">
+            <div class="w-3 h-3 rounded-full bg-green-400 mr-2"></div>
+            <span class="text-sm">Even split</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-3 h-3 rounded-full bg-orange-500 mr-2"></div>
+            <span class="text-sm">Custom split</span>
+          </div>
+        </div>
+        
+        <table class="health-table">
+          <tr>
+            <td>0%</td>
+            <td>100%</td>
+            <td>0%</td>
+            <td>100%</td>
+            <td>0%</td>
+            <td>100%</td>
+          </tr>
+        </table>
+      </div>
+      
+      <!-- Summary Card -->
+      <div class="stats-card" data-aos="fade-up" data-aos-delay="150">
+        <div class="stats-header">
+          <h3 class="stats-title">Summary</h3>
+          <span class="stats-period" id="currentPeriod">This Week</span>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div class="text-center">
+            <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Total Spent</div>
+            <div class="text-2xl font-bold text-accent-purple" id="totalSpent">$0.00</div>
+          </div>
+          <div class="text-center">
+            <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Avg. Per Bill</div>
+            <div class="text-2xl font-bold text-accent-blue" id="avgPerBill">$0.00</div>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div class="text-center">
+            <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Bills Count</div>
+            <div class="text-2xl font-bold text-accent-green" id="billsCount">0</div>
+          </div>
+          <div class="text-center">
+            <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Most Expensive</div>
+            <div class="text-2xl font-bold text-accent-red" id="mostExpensive">$0.00</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Top Restaurants -->
+      <div class="stats-card stats-card-dark" data-aos="fade-up" data-aos-delay="250">
+        <div class="stats-header">
+          <h3 class="stats-title">Top Restaurants</h3>
+          <span class="stats-period">Avg this week</span>
+        </div>
+        <div class="chart-container" style="position: relative; height: 200px;">
+          <canvas id="restaurantsChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- People Spending -->
+      <div class="stats-card stats-card-dark" data-aos="fade-up" data-aos-delay="300">
+        <div class="stats-header">
+          <h3 class="stats-title">People Spending</h3>
+          <span class="stats-period">Avg this week</span>
+        </div>
+        <div class="chart-container" style="position: relative; height: 200px;">
+          <canvas id="peopleSpendingChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- Monthly Comparison -->
+      <div class="stats-card stats-card-dark" data-aos="fade-up" data-aos-delay="350">
+        <div class="stats-header">
+          <h3 class="stats-title">Month vs Month</h3>
+          <span class="stats-period">Avg this month</span>
+        </div>
+        <div class="chart-container" style="position: relative; height: 200px;">
+          <canvas id="monthComparisonChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Modal -->
+  <div id="filterModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-2xl modal-content max-w-md">
+      <div class="mt-3">
+        <div class="flex justify-between items-center border-b pb-3 mb-4 dark:border-gray-700">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+            <i class="fas fa-filter mr-2"></i>Filter Statistics
+          </h3>
+          <button onclick="Statistics.closeFilterModal()" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date Range</label>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="text-xs text-gray-500 dark:text-gray-400">From</label>
+                <input type="date" id="dateFrom" class="w-full px-3 py-2 border rounded-xl dark:bg-dark-card dark:border-gray-600 dark:text-white">
+              </div>
+              <div>
+                <label class="text-xs text-gray-500 dark:text-gray-400">To</label>
+                <input type="date" id="dateTo" class="w-full px-3 py-2 border rounded-xl dark:bg-dark-card dark:border-gray-600 dark:text-white">
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Restaurants</label>
+            <select id="restaurantFilter" multiple class="w-full px-3 py-2 border rounded-xl dark:bg-dark-card dark:border-gray-600 dark:text-white">
+              <!-- Will be populated dynamically -->
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">People</label>
+            <select id="peopleFilter" multiple class="w-full px-3 py-2 border rounded-xl dark:bg-dark-card dark:border-gray-600 dark:text-white">
+              <!-- Will be populated dynamically -->
+            </select>
+          </div>
+        </div>
+        
+        <div class="flex justify-end mt-6">
+          <button onclick="Statistics.resetFilters()" class="btn btn-secondary mr-2">
+            Reset
+          </button>
+          <button onclick="Statistics.applyFilters()" class="btn btn-primary">
+            Apply
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Modal -->
+  <div id="historyModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-2xl modal-content">
+      <div class="mt-3">
+        <div class="flex justify-between items-center border-b pb-3 mb-4 dark:border-gray-700">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+            <i class="fas fa-history mr-2"></i>Bill History
+          </h3>
+          <button onclick="History.closeHistoryModal()" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <!-- Search & Filter -->
+        <div class="mb-5 flex items-center gap-3">
+          <div class="flex-1 relative">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
+              <i class="fas fa-search text-gray-400"></i>
+            </span>
+            <input type="text" id="historySearch" placeholder="Search by restaurant, location or date..." 
+              class="w-full pl-10 px-3 py-2 border rounded-xl dark:bg-dark-card dark:border-gray-600 dark:text-white">
+          </div>
+          <select id="historyFilter" class="px-3 py-2 border rounded-xl dark:bg-dark-card dark:border-gray-600 dark:text-white">
+            <option value="all">All Bills</option>
+            <option value="week">Last Week</option>
+            <option value="month">Last Month</option>
+            <option value="year">Last Year</option>
+          </select>
+        </div>
+        
+        <!-- Bill History List -->
+        <div id="historyList" class="space-y-3 max-h-96 overflow-y-auto">
+          <!-- Will be populated dynamically -->
+          <div class="p-4 text-center text-gray-500 dark:text-gray-400">
+            No saved bills found.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-20 right-4 z-50 space-y-2"></div>
+
+  <!-- Initialize the page -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check for dark mode preference from localStorage
+      const isDarkMode = localStorage.getItem('theme') === 'dark';
+      if (isDarkMode) {
+        document.documentElement.classList.add('dark');
+      }
+      
+      // Initialize animations
+      AOS.init({
+        duration: 800,
+        easing: 'ease-out-cubic',
+        once: true
+      });
+      
+      // Initialize UI elements
+      UI.init();
+      
+      // Initialize statistics
+      Statistics.init();
+      
+      // Add direct event listener for theme toggle button
+      const themeToggle = document.getElementById('themeToggle');
+      if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+          const isDark = document.documentElement.classList.toggle('dark');
+          localStorage.setItem('theme', isDark ? 'dark' : 'light');
+          
+          // Update chart colors using the dedicated method
+          if (Statistics && typeof Statistics.updateChartTheme === 'function') {
+            Statistics.updateChartTheme();
+          }
+        });
+      }
+      
+      // Tab navigation
+      document.querySelectorAll('.tab-item').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          Statistics.changePeriod(tab.dataset.period);
+        });
+      });
+      
+      // Filter button
+      document.getElementById('filterBtn').addEventListener('click', () => {
+        Statistics.openFilterModal();
+      });
+      
+      // History button
+      const historyBtn = document.getElementById('historyBtn');
+      if (historyBtn) {
+        historyBtn.addEventListener('click', () => {
+          History.openHistoryModal();
+        });
+      }
+      
+      // Chart type toggle
+      document.getElementById('spendingChartType').addEventListener('click', () => {
+        const icon = document.querySelector('#spendingChartType i');
+        if (icon.classList.contains('fa-chart-line')) {
+          icon.classList.replace('fa-chart-line', 'fa-chart-bar');
+          Statistics.toggleChartType('bar');
+        } else {
+          icon.classList.replace('fa-chart-bar', 'fa-chart-line');
+          Statistics.toggleChartType('line');
+        }
+      });
+    });
+  </script>
+</body>
+
+</html> 
