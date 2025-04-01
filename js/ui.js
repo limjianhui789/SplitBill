@@ -212,9 +212,8 @@
         currentPath = currentPath.replace(/^\/+|\/+$/g, '');
         const pathSegments = currentPath.split('/');
         // Default to index.html if path is empty or just refers to the root
-        const currentPageFilename = pathSegments.pop() || 'index.html';
-
-        // console.log(`[Debug] setActiveNavItem: Current Page Filename = ${currentPageFilename}`); // Debug
+        let currentPageFilename = pathSegments.pop() || 'index.html';
+        currentPageFilename = currentPageFilename.replace(/\.html$/, ''); // Normalize: remove .html
 
         navItems.forEach(item => {
             item.classList.remove('active'); // Ensure all are inactive first
@@ -232,19 +231,16 @@
                     itemHrefPath = itemHrefPath.split('?')[0].split('#')[0];
                     const hrefSegments = itemHrefPath.split('/');
                     // Default to index.html if href is '/' or empty or refers to root
-                    itemHrefFilename = hrefSegments.pop() || 'index.html';
-                    // console.log(`[Debug] setActiveNavItem (A): Comparing with Item Href Filename = ${itemHrefFilename}`); // Debug
+                    itemHrefFilename = (hrefSegments.pop() || 'index.html').replace(/\.html$/, ''); // Normalize: remove .html
                 }
             } else if (item.dataset.page) { // Check for data-page attribute on buttons/divs
-                 itemHrefFilename = item.dataset.page;
-                 // console.log(`[Debug] setActiveNavItem (data-page): Comparing with Item Data Page = ${itemHrefFilename}`); // Debug
+                 itemHrefFilename = (item.dataset.page || '').replace(/\.html$/, ''); // Normalize: remove .html, handle potential undefined
             }
 
 
             // Add active class if the item's href/data filename matches the current page filename
             if (itemHrefFilename && itemHrefFilename === currentPageFilename) {
                 item.classList.add('active');
-                // console.log(`[Debug] setActiveNavItem: Adding 'active' class to item for ${itemHrefFilename}`); // Debug
             }
         });
     } // End of setActiveNavItem
