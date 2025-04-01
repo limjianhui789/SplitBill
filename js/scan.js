@@ -418,9 +418,9 @@ class Scan {
                      // Create list item element for review with assignment dropdown
                      const li = document.createElement('div');
                      li.className = 'scan-review-item flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-md mb-2 gap-2'; // Added margin-bottom
-                     // Store data attributes for the assignment logic
-                     li.dataset.description = description;
-                     li.dataset.price = priceValue.toFixed(2); // Store precise price
+                     // Store original data attributes for reference if needed, but primary source will be input fields
+                     li.dataset.originalDescription = description;
+                     li.dataset.originalPrice = priceValue.toFixed(2);
 
                      // Create dropdown options
                      let optionsHTML = `<option value="ignore">Ignore</option>`; // Default: Ignore
@@ -431,9 +431,9 @@ class Scan {
                      // Optionally add Tax option: optionsHTML += `<option value="tax">Set as Tax (%)</option>`;
 
                      li.innerHTML = `
-                         <div class="flex-grow mr-2 mb-2 sm:mb-0">
-                           <span class="block text-sm text-gray-800 dark:text-gray-200">${Utils.escapeHTML(description)}</span>
-                           <span class="block text-xs font-semibold text-gray-600 dark:text-gray-300">${Utils.formatCurrency(priceValue)}</span>
+                         <div class="flex-grow mr-2 mb-2 sm:mb-0 space-y-1">
+                           <input type="text" class="review-item-name w-full text-sm border rounded-md px-2 py-1 dark:bg-dark-input dark:border-gray-600 dark:text-white focus:ring-1 focus:ring-accent-purple focus:border-transparent" value="${Utils.escapeHTML(description)}">
+                           <input type="text" inputmode="decimal" class="review-item-price w-full text-xs font-semibold border rounded-md px-2 py-1 dark:bg-dark-input dark:border-gray-600 dark:text-white focus:ring-1 focus:ring-accent-purple focus:border-transparent" value="${priceValue.toFixed(2)}" oninput="Utils.handleCalculatorInput(this)">
                          </div>
                          <div class="w-full sm:w-auto">
                            <select class="item-assignment-select w-full sm:w-48 px-2 py-1 text-sm border rounded-md dark:bg-dark-input dark:border-gray-600 dark:text-white focus:ring-1 focus:ring-accent-purple focus:border-transparent">
@@ -460,8 +460,7 @@ class Scan {
              if (taxInput && !isNaN(tax)) {
                  // Convert tax amount to percentage if needed, assuming API gives amount
                  // This logic might need adjustment based on actual invoice data and requirements
-                 // For now, let's assume tax is an amount and we prefill the % field if possible
-                 // This is complex. Let's just store it for now.
+                 // For now, let's just store it for now.
                  reviewModal.dataset.scannedTax = tax.toFixed(2);
                  console.log("Scanned tax amount stored:", tax.toFixed(2));
              } else {
@@ -479,7 +478,7 @@ class Scan {
 
              reviewModal.classList.remove('hidden'); // Show the review modal
 
-             UI.showToast(`${itemsAddedCount} item(s) extracted. Please assign or ignore.`, itemsAddedCount > 0 ? "success" : "warning");
+             UI.showToast(`${itemsAddedCount} item(s) extracted. Please review and assign.`, itemsAddedCount > 0 ? "success" : "warning");
 
 
          } catch (error) {
@@ -513,14 +512,35 @@ class Scan {
          let errors = 0;
 
          reviewItems.forEach(item => {
-             const description = item.dataset.description;
-             const price = parseFloat(item.dataset.price);
+             // Get values from the input fields now
+             const nameInput = item.querySelector('.review-item-name');
+             const priceInput = item.querySelector('.review-item-price');
              const selectElement = item.querySelector('.item-assignment-select');
-             const selectedValue = selectElement ? selectElement.value : 'ignore';
+
+             if (!nameInput || !priceInput || !selectElement) {
+                 console.warn("Skipping item due to missing input/select elements.", item);
+                 errors++;
+                 return;
+             }
+
+             const description = nameInput.value.trim();
+             const price = Utils.parseCurrency(priceInput.value); // Use parseCurrency to handle potential formatting
+             const selectedValue = selectElement.value;
 
              if (isNaN(price)) {
-                 console.warn(`Skipping item "${description}" due to invalid price.`);
+                 console.warn(`Skipping item "${description}" due to invalid price: ${priceInput.value}`);
+                 errors++;
+                 // Optionally notify user about skipped item
+                 // UI.showToast(`Skipped item "${description}" due to invalid price.`, "warning");
                  return; // Skip items with invalid prices
+             }
+
+             if (!description) {
+                console.warn(`Skipping item with empty description and price ${price}.`);
+                errors++;
+                 // Optionally notify user about skipped item
+                // UI.showToast(`Skipped item with empty description.`, "warning");
+                return; // Skip items with empty descriptions
              }
 
              console.log(`Processing assignment for "${description}" (${price}): Target = ${selectedValue}`);
@@ -557,7 +577,7 @@ class Scan {
          let message = "Assignments complete. ";
          if (assignedCount > 0) message += `${assignedCount} item(s) assigned. `;
          if (feeAdded > 0) message += `${Utils.formatCurrency(feeAdded)} added to fees. `;
-         if (errors > 0) message += `${errors} assignment(s) failed.`;
+         if (errors > 0) message += `${errors} assignment(s) failed or were skipped.`;
 
          UI.showToast(message.trim(), errors > 0 ? "warning" : "success");
 

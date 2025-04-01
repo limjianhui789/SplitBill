@@ -150,14 +150,17 @@
                 <input type="text"
                   class="food-price w-full sm:w-28 px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-purple focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500 text-sm sm:text-base"
                   placeholder="Price" inputmode="decimal" oninput="Utils.handleCalculatorInput(this)">
-                <button type="button" onclick="Person.removeFoodItem(this)"
-                        class="remove-food-btn p-1.5 sm:p-2 rounded-full text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 ease-in-out self-center sm:self-auto">
-                  <i class="ti ti-minus text-lg sm:text-xl"></i>
-                </button>
-                <button type="button" onclick="Person.addFoodItem(this)"
-                  class="add-food-btn p-1.5 sm:p-2 rounded-full text-accent-blue hover:text-blue-700 dark:text-accent-blue dark:hover:text-blue-400 hover:bg-blue-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-blue transition-colors duration-200 ease-in-out self-center sm:self-auto">
-                  <i class="ti ti-plus text-lg sm:text-xl"></i>
-                </button>
+                <!-- Button Wrapper -->
+                <div class="flex items-center justify-center sm:justify-start gap-1 sm:gap-2">
+                  <button type="button" onclick="Person.removeFoodItem(this)"
+                          class="remove-food-btn p-1.5 sm:p-2 rounded-full text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 ease-in-out">
+                    <i class="ti ti-minus text-lg sm:text-xl"></i>
+                  </button>
+                  <button type="button" onclick="Person.addFoodItem(this)"
+                    class="add-food-btn p-1.5 sm:p-2 rounded-full text-accent-blue hover:text-blue-700 dark:text-accent-blue dark:hover:text-blue-400 hover:bg-blue-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-blue transition-colors duration-200 ease-in-out">
+                    <i class="ti ti-plus text-lg sm:text-xl"></i>
+                  </button>
+                </div>
               </li>
             </ul>
           </div>

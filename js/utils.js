@@ -18,6 +18,28 @@ const Utils = {
       return formattedValue + currencySymbol;
     }
   },
+
+  // Parse currency string into a number, removing symbols
+  parseCurrency: function(value) {
+    if (typeof value !== 'string') {
+      // If it's already a number, return it directly
+      if (typeof value === 'number' && !isNaN(value)) {
+        return value;
+      }
+      // Otherwise, attempt to convert to string or return 0
+      value = String(value);
+    }
+    
+    // Remove common currency symbols ($ sign, etc.) and thousands separators (commas)
+    // Allow only digits and a single decimal point
+    const numericString = value.replace(/[^\d.-]/g, ''); 
+    
+    // Parse the cleaned string as a float
+    const parsedValue = parseFloat(numericString);
+    
+    // Return the parsed number, or 0 if parsing failed
+    return isNaN(parsedValue) ? 0 : parsedValue;
+  },
   
   // Show toast notification
   showToast: function(message, type = 'info') {
