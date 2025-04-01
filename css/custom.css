@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600&display=swap');
+
+
 /* SplitInvoice Custom Styles
    Based on Design Prompt */
 
@@ -26,7 +29,7 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
   background-color: var(--bg-primary);
   color: var(--text-primary);
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -46,7 +49,7 @@ body {
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
   font-weight: 700;
 }
 
@@ -118,6 +121,59 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #dc2626;
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+}
+
+.btn-primary i,
+.btn-success i {
+  color: inherit; /* Ensure icon color matches button text color */
+}
+
+/* Ensure primary and success buttons have dark text in light mode for contrast */
+html:not(.dark) .btn-primary,
+html:not(.dark) .btn-success {
+  color: var(--text-primary);
+}
+
+html:not(.dark) .btn-primary i,
+html:not(.dark) .btn-success i {
+  color: var(--text-primary); /* Explicitly set icon color too */
+}
+
+/* Ensure specific background color buttons have dark text in light mode */
+html:not(.dark) .bg-accent-purple,
+html:not(.dark) .bg-accent-green {
+  color: var(--text-primary) !important; /* Use !important to override inline style */
+}
+
+html:not(.dark) .bg-accent-purple i,
+html:not(.dark) .bg-accent-green i {
+  color: var(--text-primary) !important; /* Explicitly set icon color too */
+}
+
+html:not(.dark) .bg-accent-blue,
+html:not(.dark) .bg-accent-blue i {
+  color: var(--text-primary);
+}
+
+html:not(.dark) .btn-secondary,
+html:not(.dark) .btn-secondary i {
+  color: var(--text-primary);
+}
+
+
+
+
+
+.btn-outline-primary {
+  background-color: transparent;
+  border: 1px solid var(--accent-purple);
+  color: var(--accent-purple);
+}
+
+.btn-outline-primary:hover {
+  background-color: rgba(139, 92, 246, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.1);
 }
 
 .btn-icon {
@@ -251,7 +307,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0.5rem 0.75rem;
     font-size: 0.813rem;
   }
-  
+
   .btn-icon {
     padding: 0.5rem;
   }
@@ -295,19 +351,19 @@ input:focus, textarea:focus, select:focus {
     padding: 0;
     max-width: 100%;
   }
-  
+
   .app-card {
     border-radius: 24px 24px 0 0;
     margin-bottom: 3rem;
     min-height: calc(100vh - 64px);
   }
-  
+
   .app-navbar {
     position: sticky;
     top: 0;
     z-index: 40;
   }
-  
+
   .mobile-bottom-nav {
     position: fixed;
     right: 0;
@@ -318,7 +374,7 @@ input:focus, textarea:focus, select:focus {
     border-top: 1px solid var(--border-color);
     z-index: 40;
   }
-  
+
   .nav-item {
     display: flex;
     flex-direction: column;
@@ -326,21 +382,21 @@ input:focus, textarea:focus, select:focus {
     font-size: 10px;
     color: var(--text-secondary);
   }
-  
+
   .nav-item.active {
     color: var(--accent-purple);
   }
-  
+
   .nav-item i {
     font-size: 20px;
     margin-bottom: 2px;
   }
-  
+
   .btn {
     padding: 0.875rem 1rem;
     font-size: 0.875rem;
   }
-  
+
   .btn-icon {
     padding: 0.75rem;
   }
@@ -584,21 +640,6 @@ html, body {
 
 .btn:active {
   transform: scale(0.95);
-}
-
-.btn-primary {
-  background-color: #8B5CF6;
-  color: white;
-}
-
-.btn-success {
-  background-color: #4ADE80;
-  color: white;
-}
-
-.btn-secondary {
-  background-color: #9CA3AF;
-  color: white;
 }
 
 .btn-icon {
@@ -1303,7 +1344,7 @@ html:not(.dark) .stats-card-dark {
 
 /* Ensure dropdowns have a proper z-index when fixed position is applied */
 .name-dropdown[style*="position: fixed"] {
-  z-index: 9999 !important; 
+  z-index: 9999 !important;
 }
 
 /* Ensure action buttons have a lower z-index */
@@ -1330,19 +1371,19 @@ html:not(.dark) .stats-card-dark {
         if (dropdown) {
           // Get position relative to viewport
           const rect = e.target.getBoundingClientRect();
-          
+
           // Clone the dropdown and append to body
           const clone = dropdown.cloneNode(true);
           clone.style.top = (rect.bottom + window.scrollY) + 'px';
           clone.style.left = (rect.left + window.scrollX) + 'px';
           clone.style.width = rect.width + 'px';
-          
+
           // Clean up any existing cloned dropdowns
           document.querySelectorAll('body > .name-dropdown').forEach(el => el.remove());
-          
+
           // Add to body
           document.body.appendChild(clone);
-          
+
           // Add event listener to close on any click
           setTimeout(() => {
             document.addEventListener('click', function closeDropdown() {
@@ -1431,4 +1472,24 @@ body .name-dropdown {
 .history-meta-tag:hover {
   background-color: rgba(139, 92, 246, 0.15);
   transform: translateY(-1px);
-} 
+}
+
+
+/* ==============================================
+   Issue Fixes (April 1, 2025)
+   ============================================== */
+
+/* Fix 1 & 2: Ensure button text/icons are visible in light mode */
+html:not(.dark) #calculateTotalBtn,
+html:not(.dark) #calculateTotalBtn i,
+html:not(.dark) #saveBillBtn,
+html:not(.dark) #saveBillBtn i {
+  color: var(--text-primary) !important; /* Dark text on light purple/green */
+}
+
+/* Ensure outline button text/icon is dark enough in light mode */
+html:not(.dark) #saveTemplateBtn,
+html:not(.dark) #saveTemplateBtn i {
+  color: var(--accent-purple) !important; /* Keep accent color, ensure it overrides */
+  /* If still low contrast, could use: color: #581c87 !important; (darker purple) */
+}

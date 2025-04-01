@@ -31,7 +31,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
   
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   
   <!-- Our JavaScript Files -->
   <script src="js/utils.js"></script>
@@ -49,18 +49,18 @@
         <div class="flex">
           <div class="flex-shrink-0 flex items-center">
             <a href="index.html" class="flex items-center">
-              <i class="fas fa-arrow-left mr-2 text-accent-purple"></i>
+              <i class="ti ti-arrow-left mr-2 text-accent-purple"></i>
               <span class="text-accent-purple dark:text-accent-purple text-xl font-bold">Statistics</span>
             </a>
           </div>
         </div>
         <div class="flex items-center space-x-4">
           <button id="filterBtn" class="btn-icon">
-            <i class="fas fa-filter"></i>
+            <i class="ti ti-filter"></i>
           </button>
           <button id="themeToggle" class="btn-icon">
-            <i class="fas fa-moon dark:hidden"></i>
-            <i class="fas fa-sun hidden dark:block"></i>
+            <i class="ti ti-moon dark:hidden"></i>
+            <i class="ti ti-sun hidden dark:block"></i>
           </button>
         </div>
       </div>
@@ -73,11 +73,11 @@
       <!-- Added fallback for no statistics data available -->
       <div id="noDataFallback" class="p-6 bg-white dark:bg-dark-card rounded-lg shadow-md my-4 hidden" data-aos="fade-up">
         <div class="flex flex-col items-center justify-center">
-          <i class="fas fa-chart-bar fa-3x text-gray-400 mb-4"></i>
+          <i class="ti ti-chart-bar text-3xl text-gray-400 mb-4"></i>
           <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">No Data Available</h2>
           <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">It looks like there are no statistics data available right now. Please check back later or try refreshing.</p>
           <button onclick="Statistics.reloadData()" class="btn btn-primary">
-            <i class="fas fa-sync-alt mr-2"></i> Refresh Data
+            <i class="ti ti-refresh mr-2"></i> Refresh Data
           </button>
         </div>
       </div>
@@ -100,7 +100,7 @@
           </div>
           <div class="health-stats-value">
             $0.00 <span class="health-stats-label">total</span>
-            <i class="fas fa-receipt blood-drop"></i>
+            <i class="ti ti-receipt blood-drop"></i>
           </div>
         </div>
         
@@ -134,6 +134,9 @@
           <h3 class="stats-title">Spending Trend</h3>
           <span class="stats-period">Avg this week $120</span>
         </div>
+            <button id="spendingChartType" class="btn-icon btn-icon-sm ml-auto">
+              <i class="ti ti-chart-line"></i>
+            </button>
         
         <div class="flex mb-3">
           <div class="mr-4 flex items-center">
@@ -252,10 +255,10 @@
       <div class="mt-3">
         <div class="flex justify-between items-center border-b pb-3 mb-4 dark:border-gray-700">
           <h3 class="text-lg font-medium text-gray-900 dark:text-white">
-            <i class="fas fa-filter mr-2"></i>Filter Statistics
+            <i class="ti ti-filter mr-2"></i>Filter Statistics
           </h3>
           <button onclick="Statistics.closeFilterModal()" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
-            <i class="fas fa-times"></i>
+            <i class="ti ti-x"></i>
           </button>
         </div>
         
@@ -307,10 +310,10 @@
       <div class="mt-3">
         <div class="flex justify-between items-center border-b pb-3 mb-4 dark:border-gray-700">
           <h3 class="text-lg font-medium text-gray-900 dark:text-white">
-            <i class="fas fa-history mr-2"></i>Bill History
+            <i class="ti ti-history mr-2"></i>Bill History
           </h3>
           <button onclick="History.closeHistoryModal()" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
-            <i class="fas fa-times"></i>
+            <i class="ti ti-x"></i>
           </button>
         </div>
         
@@ -318,7 +321,7 @@
         <div class="mb-5 flex items-center gap-3">
           <div class="flex-1 relative">
             <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
-              <i class="fas fa-search text-gray-400"></i>
+              <i class="ti ti-search text-gray-400"></i>
             </span>
             <input type="text" id="historySearch" placeholder="Search by restaurant, location or date..." 
               class="w-full pl-10 px-3 py-2 border rounded-xl dark:bg-dark-card dark:border-gray-600 dark:text-white">
@@ -350,6 +353,8 @@
     document.addEventListener('DOMContentLoaded', function() {
       // Check for dark mode preference from localStorage
       const isDarkMode = localStorage.getItem('theme') === 'dark';
+        UI.createBottomNavIfMissing(); // Ensure bottom nav is present
+        UI.updateActiveNav('Stats'); // Set active state to 'Stats'
       if (isDarkMode) {
         document.documentElement.classList.add('dark');
       }
@@ -406,11 +411,11 @@
       // Chart type toggle
       document.getElementById('spendingChartType').addEventListener('click', () => {
         const icon = document.querySelector('#spendingChartType i');
-        if (icon.classList.contains('fa-chart-line')) {
-          icon.classList.replace('fa-chart-line', 'fa-chart-bar');
+        if (icon.classList.contains('ti ti-chart-line')) {
+          icon.classList.replace('ti ti-chart-line', 'ti ti-chart-bar');
           Statistics.toggleChartType('bar');
         } else {
-          icon.classList.replace('fa-chart-bar', 'fa-chart-line');
+          icon.classList.replace('ti ti-chart-bar', 'ti ti-chart-line');
           Statistics.toggleChartType('line');
         }
       });
