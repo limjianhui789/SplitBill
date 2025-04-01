@@ -1,0 +1,244 @@
+/* ==============================================
+   Transitions
+   ============================================== */
+
+/* Base Transition Property */
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); /* Default ease-in-out */
+    transition-duration: 150ms; /* Default duration */
+}
+
+.transition-transform {
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.transition-colors {
+    transition-property: background-color, border-color, color, fill, stroke, opacity;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+/* Hover effects requiring transitions (should be used with transition utilities) */
+.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+
+.hover\:translate-y-neg-1:hover {
+    transform: translateY(-1px);
+}
+
+/* Active state effects */
+.active\:scale-95:active {
+    transform: scale(0.95);
+}
+
+.active\:translate-y-1:active {
+    transform: translateY(1px);
+}
+
+/* ==============================================
+   Keyframes & Animation Classes
+   ============================================== */
+
+/* Pulse Animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); /* Example pulse color */
+  }
+  50% {
+    opacity: .7;
+  }
+  70% {
+      box-shadow: 0 0 0 10px rgba(139, 92, 246, 0);
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Fade In/Out Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease forwards;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.3s ease forwards;
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.animate-fade-out {
+    animation: fadeOut 0.3s ease forwards;
+}
+
+
+/* Scale Animations */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease forwards;
+}
+
+/* Slide Animations */
+@keyframes slideIn { /* Generic slide in - maybe needs direction? */
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.3s ease forwards;
+}
+
+/* Page Transition Animations */
+@keyframes exitLeft {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(-10%); }
+}
+
+.animate-exit-left {
+  animation: exitLeft 0.3s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes exitRight {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(10%); }
+}
+
+.animate-exit-right {
+  animation: exitRight 0.3s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes entrance { /* Consider renaming to entranceFromRight? */
+  from { opacity: 0; transform: translateX(10%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-entrance {
+  animation: entrance 0.3s ease forwards;
+}
+
+/* Swipe Animations */
+@keyframes swipeLeft {
+  to { opacity: 0; transform: translateX(-100%); }
+}
+
+.swiped-left {
+  animation: swipeLeft 0.3s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes swipeRight {
+  to { opacity: 0; transform: translateX(100%); }
+}
+
+.swiped-right {
+  animation: swipeRight 0.3s ease-out forwards;
+  pointer-events: none;
+}
+
+/* Ripple Effect */
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.ripple-effect { /* This class likely needs JS to be added dynamically */
+  position: absolute;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+}
+
+/* Modal Animation */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Class typically applied to the modal content itself */
+.animate-modal-fade-in {
+    animation: modalFadeIn 0.3s ease forwards;
+}
+
+/* Rotation Animation */
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-rotate {
+  animation: rotate 1s linear infinite;
+}
+
+/* Class applied to the element needing rotation (e.g., icon) */
+.pull-indicator.rotating i { /* Specific example */
+  animation: rotate 1s linear infinite;
+}

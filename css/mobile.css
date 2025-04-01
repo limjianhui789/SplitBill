@@ -1,0 +1,235 @@
+/* ==============================================
+   Mobile & Responsive Styles
+   ============================================== */
+
+/* Base mobile setup */
+html, body {
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
+  overscroll-behavior-y: none; /* Prevent pull-to-refresh on body */
+  touch-action: manipulation; /* Improve touch responsiveness */
+  scroll-behavior: smooth;
+}
+
+/* Ensure full height on mobile devices */
+.mobile-full-height {
+  min-height: 100vh;
+  min-height: -webkit-fill-available; /* For iOS Safari */
+}
+
+/* Safe area padding for bottom elements on devices with notches/home indicators */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 16px); /* Default padding if env var not available */
+}
+
+/* Mobile optimizations for specific components */
+@media (max-width: 640px) {
+  .app-container {
+    padding: 0; /* Remove container padding on small screens */
+    max-width: 100%;
+  }
+
+  .app-card { /* Make cards take more space on mobile */
+    border-radius: 24px 24px 0 0; /* Style top corners */
+    margin-bottom: 3rem; /* Add space at the bottom */
+    min-height: calc(100vh - 64px); /* Adjust based on navbar height */
+  }
+
+  .action-buttons {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
+  }
+
+  /* Adjust button padding and font size for mobile */
+  .btn {
+    padding: 0.875rem 1rem; /* Slightly larger tap target */
+    font-size: 0.875rem;
+  }
+
+  .btn-icon {
+    padding: 0.75rem; /* Consistent icon button padding */
+  }
+
+  .person-field {
+    padding: 0.75rem; /* Reduce padding */
+  }
+
+  .food-price {
+    padding: 0.375rem;
+    font-size: 0.813rem;
+  }
+}
+
+
+/* ==============================================
+   Floating Bottom Navigation (Primary Mobile Nav)
+   ============================================== */
+
+.bottom-navigation {
+  position: fixed !important;
+  bottom: calc(env(safe-area-inset-bottom) + 16px) !important; /* Position above safe area + margin */
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: calc(100% - 32px) !important; /* Responsive width with padding */
+  max-width: 400px !important; /* Max width for larger mobile screens */
+  height: 68px !important; /* Adjusted height */
+  margin: 0 auto !important;
+  background-color: rgba(45, 45, 45, 0.95) !important; /* Dark mode default */
+  border-radius: 24px !important; /* More rounded corners */
+  padding: 0 16px !important; /* Horizontal padding */
+  display: flex !important;
+  justify-content: space-between !important; /* Space out items */
+  align-items: center !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important; /* Stronger shadow */
+  z-index: 1000 !important; /* Ensure it's above most content */
+  backdrop-filter: blur(12px) !important; /* Increased blur */
+  border-top: none !important; /* Remove default border */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Light mode navigation */
+html:not(.dark) .bottom-navigation {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important; /* Subtle border for light mode */
+}
+
+/* Hide the original placeholder nav */
+.mobile-bottom-nav {
+  display: none !important;
+}
+
+/* Adjust overall page bottom padding to prevent content overlap */
+body {
+  /* Base padding + nav height + margin */
+  padding-bottom: calc(env(safe-area-inset-bottom) + 68px + 16px + 16px) !important;
+}
+
+/* Styling for individual nav items within the floating bar */
+.bottom-navigation .nav-item {
+  flex: 1; /* Allow items to grow */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: rgba(255, 255, 255, 0.7) !important; /* Default icon/text color (dark mode) */
+  font-size: 10px !important;
+  text-decoration: none;
+  background-color: transparent !important;
+  border: none;
+  outline: none;
+  padding: 8px 4px !important; /* Padding inside the item */
+  margin: 0 !important;
+  border-radius: 12px !important; /* Slight rounding for tap feedback */
+  transition: color 0.2s ease, background-color 0.2s ease;
+  position: relative; /* For potential future effects */
+  min-width: 50px !important; /* Minimum width */
+  text-align: center;
+}
+
+html:not(.dark) .bottom-navigation .nav-item {
+  color: rgba(0, 0, 0, 0.6) !important; /* Light mode icon/text color */
+}
+
+.bottom-navigation .nav-item i {
+  font-size: 22px !important; /* Icon size */
+  margin-bottom: 3px !important; /* Space between icon and text */
+  transition: transform 0.2s ease;
+}
+
+/* Active state styling */
+.bottom-navigation .nav-item.active {
+  color: white !important; /* Active color (dark mode) */
+}
+
+html:not(.dark) .bottom-navigation .nav-item.active {
+  color: var(--accent-purple) !important; /* Active color (light mode) - Use variable */
+}
+
+/* Optional: slight scale on active icon */
+.bottom-navigation .nav-item.active i {
+   transform: scale(1.1);
+}
+
+/* Tap feedback */
+.bottom-navigation .nav-item:active {
+    background-color: rgba(255, 255, 255, 0.1); /* Dark mode tap */
+}
+html:not(.dark) .bottom-navigation .nav-item:active {
+    background-color: rgba(0, 0, 0, 0.05); /* Light mode tap */
+}
+
+
+/* Center ('Add') Button Styling */
+.bottom-navigation .nav-item-center-wrapper { /* Wrapper for positioning */
+    position: absolute;
+    left: 50%;
+    bottom: 10px; /* Position slightly upward from the bottom edge */
+    transform: translateX(-50%);
+    z-index: 10; /* Above other items */
+}
+
+.bottom-navigation .nav-item-center {
+  width: 56px !important; /* Larger size */
+  height: 56px !important;
+  background-color: var(--accent-purple) !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4) !important; /* Purple shadow */
+  border: 3px solid var(--bg-card); /* Border matching card background for cutout effect */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+/* Ensure border color changes with theme */
+html.dark .bottom-navigation .nav-item-center {
+    border-color: rgba(45, 45, 45, 0.95); /* Match dark nav bg */
+}
+html:not(.dark) .bottom-navigation .nav-item-center {
+    border-color: rgba(255, 255, 255, 0.95); /* Match light nav bg */
+}
+
+
+.bottom-navigation .nav-item-center:active {
+  transform: scale(0.95) !important;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.5) !important;
+}
+
+.bottom-navigation .nav-item-center i {
+  color: #FFFFFF !important;
+  font-size: 24px !important;
+  margin: 0 !important; /* Reset margin */
+}
+
+/* Ensure other nav items don't overlap the center button space */
+.bottom-navigation .nav-item:nth-child(2) { /* Adjust index based on your HTML */
+    margin-right: 35px !important; /* Push item left of center */
+}
+.bottom-navigation .nav-item:nth-child(3) { /* Adjust index based on your HTML */
+    margin-left: 35px !important; /* Push item right of center */
+}
+
+
+/* Pull to refresh indicator styling */
+.pull-indicator {
+  position: absolute;
+  top: 20px; /* Adjust as needed */
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--accent-purple); /* Use theme color */
+  font-size: 24px;
+  z-index: 10; /* Below navbar, above content */
+  opacity: 0; /* Hidden by default */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.pull-indicator.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(10px); /* Example visible state */
+}
+
+.pull-indicator.hidden {
+  opacity: 0;
+}
+
+/* Rotation applied via JS using .animate-rotate class from animations.css */

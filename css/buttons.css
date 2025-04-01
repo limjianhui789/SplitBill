@@ -1,0 +1,201 @@
+/* Button styles */
+.btn {
+  border-radius: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  padding: 0.625rem 1rem; /* Base padding, might be overridden */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-size: 0.875rem; /* Base font size, might be overridden */
+  white-space: nowrap;
+  min-width: fit-content;
+  margin: 0.25rem; /* Consistent margin */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Consistent shadow */
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:active {
+  /* Combine active states: slight move + scale */
+  transform: translateY(1px) scale(0.95);
+}
+
+.btn-primary {
+  background-color: var(--accent-purple);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #7c4ff3;
+  transform: translateY(-1px); /* Consistent hover effect */
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
+}
+
+.btn-secondary {
+  background-color: var(--accent-blue);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+}
+
+.btn-success {
+  background-color: var(--accent-green);
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #34d399;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(74, 222, 128, 0.25);
+}
+
+.btn-danger {
+  background-color: var(--accent-red);
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+}
+
+.btn-primary i,
+.btn-success i {
+  color: inherit; /* Ensure icon color matches button text color */
+}
+
+/* Fix 1 & 2: Ensure button text/icons are visible in light mode */
+/* Includes fix for #saveBillBtn specifically */
+html:not(.dark) .btn-primary,
+html:not(.dark) .btn-success,
+html:not(.dark) #saveBillBtn {
+  color: var(--text-primary) !important; /* Dark text on light purple/green */
+}
+
+html:not(.dark) .btn-primary i,
+html:not(.dark) .btn-success i,
+html:not(.dark) #saveBillBtn i {
+  color: var(--text-primary) !important; /* Explicitly set icon color too */
+}
+
+/* Ensure secondary buttons have dark text in light mode */
+html:not(.dark) .btn-secondary,
+html:not(.dark) .btn-secondary i {
+  color: var(--text-primary);
+}
+
+.btn-outline-primary {
+  background-color: transparent;
+  border: 1px solid var(--accent-purple);
+  color: var(--accent-purple);
+}
+
+.btn-outline-primary:hover {
+  background-color: rgba(139, 92, 246, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.1);
+}
+
+/* Combined and refined .btn-icon styles */
+.btn-icon {
+  display: inline-flex; /* Use inline-flex for proper alignment */
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem; /* Standardized size */
+  height: 2.5rem; /* Standardized size */
+  padding: 0; /* Remove padding if width/height are set */
+  border-radius: 50%; /* Circular shape */
+  background-color: rgba(0, 0, 0, 0.05); /* Subtle background */
+  color: #6B7280; /* Default icon color */
+  transition: all 0.3s ease;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  min-width: auto; /* Override .btn */
+}
+
+.btn-icon:hover {
+  color: var(--accent-purple);
+  background-color: rgba(139, 92, 246, 0.1);
+  transform: translateY(-1px); /* Consistent hover effect */
+}
+
+.dark .btn-icon {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #9CA3AF;
+}
+
+.btn-icon:active {
+  transform: scale(0.9); /* Click feedback */
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark .btn-icon:active {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.btn-group {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-group .btn {
+  flex: 1;
+  min-width: 80px;
+}
+
+/* Action buttons container */
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Default grid */
+  gap: 0.5rem;
+  margin: 1rem 0;
+  position: relative;
+  z-index: 1;
+}
+
+.action-buttons .btn {
+  width: 100%;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  border-radius: 12px;
+}
+
+.action-buttons .btn i {
+  font-size: 1.25rem;
+}
+
+/* Ripple effect for buttons */
+.ripple-effect {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}

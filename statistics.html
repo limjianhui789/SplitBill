@@ -353,8 +353,8 @@
     document.addEventListener('DOMContentLoaded', function() {
       // Check for dark mode preference from localStorage
       const isDarkMode = localStorage.getItem('theme') === 'dark';
-        UI.createBottomNavIfMissing(); // Ensure bottom nav is present
-        UI.updateActiveNav('Stats'); // Set active state to 'Stats'
+      UI.createBottomNavIfMissing(); // Ensure bottom nav is present
+      UI.setActiveNavItem(); // Set active state based on current page URL
       if (isDarkMode) {
         document.documentElement.classList.add('dark');
       }

@@ -1,0 +1,370 @@
+/* Card styles */
+.app-card {
+  background-color: var(--bg-card);
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0px 4px 12px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  position: relative;
+  z-index: 1; /* Base z-index for cards */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Person-related styles */
+.person-field {
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* isolation: auto; */ /* May interfere with dropdown positioning */
+  overflow: visible !important; /* Ensure dropdowns aren't clipped */
+  position: relative;
+  z-index: 2; /* Above base card */
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.person-field:hover {
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.person-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  /* isolation: auto; */
+  overflow: visible !important;
+  position: relative;
+  z-index: 3; /* Above person-field */
+  transition: background-color 0.2s ease;
+}
+
+.person-name:hover {
+  background-color: rgba(139, 92, 246, 0.1);
+}
+
+/* Food item styles */
+.food-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.food-price { /* Consider renaming if it's an input */
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  font-size: 0.875rem;
+  background-color: var(--bg-card); /* Ensure background for input */
+  color: var(--text-primary); /* Ensure text color for input */
+}
+
+/* Metric cards (Dashboard/Stats) */
+.metric-card {
+  position: relative;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
+  background-color: var(--bg-card); /* Ensure background */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.metric-card .icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+.metric-card .value {
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: auto; /* Push value to bottom */
+  color: var(--text-primary); /* Ensure color */
+}
+
+.metric-card .label {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Statistics Page Specific Card Styles */
+.stats-container {
+  padding: 1rem;
+}
+
+.stats-card {
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: var(--bg-card); /* Default to bg-card */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  overflow: hidden; /* Prevent overflow issues */
+  transition: background-color 0.3s ease;
+}
+
+.dark .stats-card {
+  background-color: #1E1E24; /* Specific dark mode stats card */
+}
+
+/* Ensure light mode forces light background if needed */
+html:not(.dark) .stats-card-dark {
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+/* Ensure dark mode forces dark background if needed */
+.dark .stats-card-light { /* Example if you had light cards forced */
+   background-color: #1E1E24;
+   color: white;
+}
+
+
+.stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.stats-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary); /* Use variable */
+}
+
+.stats-period {
+  font-size: 0.875rem;
+  color: var(--text-secondary); /* Use variable */
+}
+
+/* Health Statistics Specific Card */
+.health-stats-card {
+  background-color: var(--bg-primary); /* Use primary background */
+  color: var(--text-primary);
+  border-radius: 1.5rem;
+  padding: 1.25rem; /* Adjusted padding */
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark .health-stats-card {
+  background-color: #1e1e1e; /* Specific dark background */
+  color: white;
+}
+
+.health-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.health-stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
+}
+
+/* Health Stat Header Tag */
+.health-stats-header p {
+  padding: 0.5rem 1rem;
+  background-color: rgba(139, 92, 246, 0.1);
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary); /* Use variable */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dark .health-stats-header p {
+  background-color: rgba(139, 92, 246, 0.15);
+  color: #9CA3AF; /* Specific dark color */
+}
+
+.health-stats-header i {
+  color: var(--accent-purple); /* Use variable */
+}
+
+.health-stats-title { /* Re-defined? Consolidate with .stats-title if same */
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.health-stats-value {
+  color: var(--text-primary);
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.dark .health-stats-value {
+  color: white;
+}
+
+.health-stats-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.dark .health-stats-label {
+  color: #9ca3af; /* Keep specific if needed */
+}
+
+.health-stats-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.health-table {
+  width: 100%;
+  text-align: center;
+  border-spacing: 10px;
+  border-collapse: separate; /* Use separate borders with spacing */
+}
+
+.health-table td {
+  padding: 8px;
+  font-size: 0.875rem;
+  color: var(--text-primary); /* Use variable */
+}
+
+.health-normal {
+  color: var(--accent-green); /* Use variable */
+}
+
+.health-above-normal {
+  color: #f97316; /* Consider making this an accent variable */
+}
+
+.glucose-icon {
+  color: var(--accent-red); /* Use variable */
+  font-size: 1.5rem;
+}
+
+.blood-drop {
+  color: var(--accent-red); /* Use variable */
+  margin-left: 0.25rem;
+}
+
+/* Modal styles */
+.modal-content {
+  background-color: var(--bg-card);
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px var(--shadow-color);
+  position: relative; /* Typically controlled by modal JS */
+  z-index: 10000; /* High z-index for modals */
+  animation: modalFadeIn 0.3s ease forwards; /* Apply animation */
+  /* Add padding, max-width etc. as needed */
+  padding: 1.5rem;
+  max-width: 500px; /* Example max-width */
+  margin: 1rem auto; /* Center horizontally */
+}
+
+/* Toast notifications */
+#toastContainer { /* Container positioning */
+  position: fixed;
+  bottom: 80px !important; /* Above floating nav */
+  right: 20px;
+  z-index: 10001; /* Above modals */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.toast {
+  background-color: var(--bg-card); /* Use card background */
+  color: var(--text-primary); /* Use primary text */
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideInRight 0.3s ease forwards, fadeOut 0.3s ease 2.7s forwards; /* In/Out animation */
+  max-width: 300px; /* Limit width */
+  border: 1px solid var(--border-color); /* Add subtle border */
+  /* Add styles for different toast types (success, error, info) */
+}
+
+.toast.success {
+    background-color: var(--accent-green);
+    color: white;
+    border-color: var(--accent-green);
+}
+html:not(.dark) .toast.success {
+    color: var(--text-primary); /* Dark text on light green */
+}
+
+.toast.error {
+    background-color: var(--accent-red);
+    color: white;
+    border-color: var(--accent-red);
+}
+
+.toast.info {
+    background-color: var(--accent-blue);
+    color: white;
+    border-color: var(--accent-blue);
+}
+
+
+/* History List Item Meta Tags (Could be considered components) */
+.history-meta-info {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+}
+
+.history-meta-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: rgba(139, 92, 246, 0.1);
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary); /* Use variable */
+  transition: all 0.2s ease;
+}
+
+.dark .history-meta-tag {
+  background-color: rgba(139, 92, 246, 0.15);
+  color: #9CA3AF; /* Specific dark color */
+}
+
+.history-meta-tag i {
+  color: var(--accent-purple); /* Use variable */
+  font-size: 1rem;
+}
+
+.history-meta-tag:hover {
+  background-color: rgba(139, 92, 246, 0.15);
+  transform: translateY(-1px);
+}

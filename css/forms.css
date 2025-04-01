@@ -1,0 +1,114 @@
+/* Input styles */
+input, textarea, select {
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  transition: all 0.2s;
+  padding: 0.5rem 0.75rem; /* Add default padding */
+  font-size: 0.875rem; /* Add default font size */
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+  outline: none; /* Remove default focus outline */
+}
+
+/* Person-related styles */
+.person-field {
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transform-origin: center center;
+  will-change: transform;
+  position: relative; /* Needed for dropdown positioning */
+  z-index: 2; /* Ensure it's above basic elements */
+  overflow: visible !important; /* Ensure dropdowns are not clipped */
+}
+
+.person-field:hover {
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.person-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative; /* Ensure it's interactable */
+  z-index: 3; /* Above person-field */
+}
+
+.person-name:hover {
+  background-color: rgba(139, 92, 246, 0.1);
+}
+
+/* Name Dropdown */
+.name-dropdown {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+  position: absolute; /* Base positioning, JS might override */
+  z-index: 10000 !important; /* High z-index */
+  width: 100%;
+  margin-top: 0.25rem;
+  background-color: var(--bg-card);
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  transform-origin: top;
+}
+
+/* Ensure dropdowns have a proper z-index when fixed position is applied by JS */
+.name-dropdown[style*="position: fixed"] {
+  z-index: 10000 !important;
+}
+
+/* Food item styles */
+.food-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.food-price {
+  flex: 1;
+  padding: 0.5rem; /* Base padding */
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  font-size: 0.875rem; /* Base font size */
+}
+
+.add-item-btn {
+  padding: 0.25rem;
+  border-radius: 6px;
+  color: var(--accent-blue);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline-flex; /* Align icon */
+  align-items: center;
+  justify-content: center;
+}
+
+.add-item-btn:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Mobile optimizations for forms */
+@media (max-width: 640px) {
+  .person-field {
+    padding: 0.75rem;
+  }
+
+  .food-price {
+    padding: 0.375rem;
+    font-size: 0.813rem;
+  }
+}

@@ -98,8 +98,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (operationButtons) {
       const saveAsTemplateBtn = document.createElement('button');
       saveAsTemplateBtn.type = 'button';
-      saveAsTemplateBtn.className = 'btn btn-secondary';
-      saveAsTemplateBtn.innerHTML = '<i class="fas fa-bookmark mr-1"></i><span>Save Template</span>';
+      // Apply consistent styling similar to other action buttons
+      saveAsTemplateBtn.className = 'btn border border-accent-purple text-accent-purple hover:bg-accent-purple/10 dark:hover:bg-accent-purple/20 focus:ring-offset-2 focus:ring-accent-purple shadow-sm rounded-md px-4 py-2 text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-2';
+      saveAsTemplateBtn.innerHTML = '<i class="ti ti-bookmark"></i><span>Save Template</span>'; // Use Tabler icon
       saveAsTemplateBtn.title = 'Save as Template';
       saveAsTemplateBtn.addEventListener('click', Template.saveAsTemplate);
       

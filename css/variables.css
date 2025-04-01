@@ -1,0 +1,26 @@
+/* SplitInvoice Custom Styles
+   Based on Design Prompt */
+
+:root {
+  /* Light mode variables */
+  --bg-primary: #f9fafb;
+  --bg-card: #ffffff;
+  --text-primary: #121214;
+  --text-secondary: #4b5563;
+  --accent-green: #4ADE80;
+  --accent-red: #EF4444;
+  --accent-purple: #8B5CF6;
+  --accent-blue: #3B82F6;
+  --border-color: rgba(229, 231, 235, 1);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+  /* Dark mode variables */
+  --bg-primary: #121214;
+  --bg-card: #1E1E24;
+  --text-primary: #FFFFFF;
+  --text-secondary: #9CA3AF;
+  --border-color: rgba(255, 255, 255, 0.05);
+  --shadow-color: rgba(0, 0, 0, 0.2);
+}

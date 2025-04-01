@@ -1,0 +1,183 @@
+/* General Layout */
+body {
+  /* padding-bottom: 70px; */ /* Handled by safe-bottom now */
+  overscroll-behavior-y: none;
+  touch-action: manipulation;
+  scroll-behavior: smooth;
+}
+
+.app-container {
+  /* Base container styles if any */
+}
+
+/* Navbar */
+.app-navbar {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-color);
+  position: relative; /* Default */
+  z-index: 9998; /* High z-index */
+}
+
+/* Original Mobile Bottom Navigation (Hidden by default now) */
+.mobile-bottom-nav {
+  display: none !important; /* Hidden in favor of floating nav */
+  /* Original styles kept for reference if needed */
+  /*
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  background-color: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  z-index: 40;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  */
+}
+
+/* New Floating Bottom Navigation */
+.bottom-navigation {
+  position: fixed !important;
+  bottom: calc(env(safe-area-inset-bottom) + 16px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: calc(100% - 32px) !important;
+  max-width: 80% !important; /* Limit width on larger screens if needed */
+  height: 68px !important; /* Adjusted height */
+  margin: 0 auto !important;
+  background-color: rgba(45, 45, 45, 0.95) !important; /* Dark mode default */
+  border-radius: 28px !important;
+  padding: 0 15px !important; /* Adjusted padding */
+  display: flex !important;
+  justify-content: space-between !important; /* Space out items */
+  align-items: center !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important; /* Enhanced shadow */
+  z-index: 1000 !important; /* Ensure it's above most content */
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-top: none !important; /* No top border needed */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Light mode styling for navigation */
+html:not(.dark) .bottom-navigation {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1) !important; /* Softer shadow */
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Navigation Items within Floating Nav */
+.bottom-navigation .nav-item {
+  flex: 1; /* Allow items to space out */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: rgba(255, 255, 255, 0.7) !important; /* Default dark mode text */
+  font-size: 10px !important;
+  text-decoration: none;
+  background-color: transparent !important;
+  border: none;
+  outline: none;
+  padding: 5px 0 !important; /* Vertical padding */
+  margin: 0 !important;
+  min-width: auto !important;
+  width: auto !important;
+  border-radius: 0 !important;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+html:not(.dark) .bottom-navigation .nav-item {
+  color: rgba(0, 0, 0, 0.6) !important; /* Light mode text */
+}
+
+.bottom-navigation .nav-item i {
+  font-size: 20px !important;
+  margin-bottom: 3px !important; /* Slightly adjusted spacing */
+  transition: transform 0.2s ease;
+}
+
+.bottom-navigation .nav-item.active {
+  color: rgba(255, 255, 255, 1) !important; /* Active dark mode */
+}
+
+html:not(.dark) .bottom-navigation .nav-item.active {
+  color: #8B5CF6 !important; /* Active light mode (Accent color) */
+}
+
+.bottom-navigation .nav-item:active i {
+  transform: scale(0.9); /* Subtle press effect */
+}
+
+
+/* Center ('+') Button Specific Styles */
+.bottom-navigation .relative { /* Container for the center button */
+  margin-top: 0 !important; /* Reset any inherited margin */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Adjust flex basis if needed, or use margins if items are not evenly spaced */
+}
+
+.bottom-navigation .nav-item-center {
+  width: 48px !important; /* Slightly larger */
+  height: 48px !important;
+  background-color: var(--accent-purple) !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 10px rgba(139, 92, 246, 0.4) !important;
+  position: relative !important; /* Keep relative to its container */
+  z-index: 10 !important; /* Above sibling nav items */
+  margin: 0 10px !important; /* Horizontal margin to push siblings */
+  transform: translateY(-10px) !important; /* Keep it raised slightly */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.bottom-navigation .nav-item-center:active {
+  transform: translateY(-8px) scale(0.95) !important; /* Press effect */
+  box-shadow: 0 2px 6px rgba(139, 92, 246, 0.5) !important;
+}
+
+.bottom-navigation .nav-item-center i {
+  color: #FFFFFF !important;
+  font-size: 24px !important;
+  margin: 0 !important; /* Reset icon margin */
+}
+
+/* Safe Area Padding */
+.safe-bottom {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 90px) !important; /* Ensure content clears floating nav */
+}
+
+/* Mobile App Specific Layout Adjustments */
+@media (max-width: 640px) {
+  .app-container {
+    padding: 0; /* Remove padding on mobile */
+    max-width: 100%;
+  }
+
+  .app-card {
+    border-radius: 24px 24px 0 0; /* Rounded top corners for main card */
+    /* margin-bottom: 3rem; */ /* Replaced by safe-bottom */
+    min-height: calc(100vh - 64px); /* Adjust based on navbar height */
+  }
+
+  .app-navbar {
+    position: sticky; /* Make navbar sticky on mobile */
+    top: 0;
+    z-index: 40; /* Ensure navbar is above content */
+  }
+
+  /* Full height helper for mobile */
+  .mobile-full-height {
+    min-height: 100vh; /* Fallback */
+    min-height: -webkit-fill-available; /* iOS */
+  }
+}

@@ -1,0 +1,60 @@
+/* ==============================================
+   Issue Fixes & Overrides
+   ============================================== */
+
+/* Fix 1 & 2: Ensure button text/icons are visible in light mode for specific buttons */
+/* Applied April 1, 2025 */
+html:not(.dark) #saveBillBtn,
+html:not(.dark) #saveBillBtn i {
+  /* Ensure dark text on light purple/green backgrounds for these specific IDs */
+  color: var(--text-primary) !important;
+}
+
+/* Fix z-index on name-dropdown to display above overlapping elements */
+/* Increased specificity to ensure override */
+body .name-dropdown {
+    z-index: 10000 !important; /* Very high z-index for dropdowns potentially appended to body */
+}
+
+/* Ensure specific button overrides for center nav button are applied */
+/* These might conflict if .nav-item-center is used elsewhere, consider refining selector if needed */
+.bottom-navigation .relative { /* Target the wrapper */
+  margin-top: 0 !important; /* Reset potential margin shifts */
+}
+
+.bottom-navigation .nav-item-center {
+  width: 56px !important; /* Explicit size */
+  height: 56px !important;
+  background-color: var(--accent-purple) !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4) !important;
+  position: relative !important; /* Ensure it respects the wrapper */
+  z-index: 10 !important; /* Above other nav items */
+  margin: 0 !important; /* Reset margins */
+  transform: translateY(0) !important; /* Reset transforms */
+  border: 3px solid var(--bg-card); /* Add border for cutout effect */
+}
+
+/* Adjust border color based on theme for cutout effect */
+html.dark .bottom-navigation .nav-item-center {
+    border-color: rgba(45, 45, 45, 0.95) !important; /* Dark nav background */
+}
+html:not(.dark) .bottom-navigation .nav-item-center {
+    border-color: rgba(255, 255, 255, 0.95) !important; /* Light nav background */
+}
+
+.bottom-navigation .nav-item-center:active {
+  transform: scale(0.95) !important; /* Keep active state */
+}
+
+.bottom-navigation .nav-item-center i {
+  color: #FFFFFF !important; /* White icon */
+  font-size: 24px !important;
+  margin: 0 !important; /* Reset icon margin */
+}
+
+/* Note: JS comments related to dropdown positioning were removed as they belong in JS files */
+/* Note: Removed duplicate health stats card styles as they should be in components.css */
