@@ -1,17 +1,27 @@
+/* SplitInvoice Custom Styles - Main Import File */
+
+/* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600&display=swap');
 
-/*
-  SplitInvoice Custom Styles - Refactored into Modules
-  This file now imports modular CSS components.
-  Original content moved to respective files in the css/ directory.
-*/
+/* Import Base Styles (Variables, Body, Typography, Inputs) */
+@import url('base.css');
 
-@import url('variables.css');    /* Root variables, light/dark themes */
-@import url('base.css');         /* Body, typography, base element styles */
-@import url('layout.css');       /* Card, navbar, container styles */
-@import url('buttons.css');      /* All button styles (.btn, variants, groups) */
-@import url('forms.css');        /* Input, textarea, select, person-field styles */
-@import url('components.css');   /* Specific components (metric-card, progress, toast, modal, stats, history, dropdown) */
-@import url('animations.css');   /* Keyframes and animation utility classes */
-@import url('mobile.css');       /* Mobile-specific overrides and navigation */
-@import url('fixes.css');        /* Specific fixes and overrides */
+/* Import Component Styles (Cards, Buttons, Person Fields, Modals, Toasts, etc.) */
+@import url('components.css');
+
+/* Import Layout Styles (Navbar, Bottom Nav, Grid, Responsiveness) */
+@import url('layout.css');
+
+/* Import Animation Styles */
+@import url('animations.css');
+
+/* Import Specific Fixes */
+@import url('fixes.css');
+
+/* Any remaining custom styles specific to custom.css can go here,
+   but ideally, most styles should be organized into the imported files. */
+
+/* Example: A style that might uniquely belong here if it doesn't fit elsewhere */
+.unique-custom-style {
+  /* properties */
+}

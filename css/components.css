@@ -1,3 +1,6 @@
+/* SplitInvoice Custom Styles - Components
+   Contains styles for cards, buttons, inputs, person fields, food items, metric cards, progress circles, toasts, modals */
+
 /* Card styles */
 .app-card {
   background-color: var(--bg-card);
@@ -6,10 +9,217 @@
   box-shadow: 0px 4px 12px var(--shadow-color);
   border: 1px solid var(--border-color);
   position: relative;
-  z-index: 1; /* Base z-index for cards */
+  z-index: 1;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   transform: translateZ(0);
   will-change: transform;
+}
+
+/* Button styles */
+.btn {
+  border-radius: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  padding: 0.625rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  min-width: fit-content;
+  margin: 0.25rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.95);
+}
+
+.btn-primary {
+  background-color: var(--accent-purple);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #7c4ff3;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
+}
+
+.btn-secondary {
+  background-color: var(--accent-blue);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+}
+
+.btn-success {
+  background-color: var(--accent-green);
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #34d399;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(74, 222, 128, 0.25);
+}
+
+.btn-danger {
+  background-color: var(--accent-red);
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+}
+
+.btn-primary i,
+.btn-success i {
+  color: inherit; /* Ensure icon color matches button text color */
+}
+
+/* Ensure primary and success buttons have dark text in light mode for contrast */
+html:not(.dark) .btn-primary,
+html:not(.dark) .btn-success {
+  color: var(--text-primary);
+}
+
+html:not(.dark) .btn-primary i,
+html:not(.dark) .btn-success i {
+  color: var(--text-primary); /* Explicitly set icon color too */
+}
+
+/* Ensure specific background color buttons have dark text in light mode */
+html:not(.dark) .bg-accent-purple,
+html:not(.dark) .bg-accent-green {
+  color: var(--text-primary) !important; /* Use !important to override inline style */
+}
+
+html:not(.dark) .bg-accent-purple i,
+html:not(.dark) .bg-accent-green i {
+  color: var(--text-primary) !important; /* Explicitly set icon color too */
+}
+
+html:not(.dark) .bg-accent-blue,
+html:not(.dark) .btn-secondary,
+html:not(.dark) .btn-secondary i {
+  color: var(--text-primary);
+}
+
+.btn-outline-primary {
+  background-color: transparent;
+  border: 1px solid var(--accent-purple);
+  color: var(--accent-purple);
+}
+
+.btn-outline-primary:hover {
+  background-color: rgba(139, 92, 246, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.1);
+}
+
+.btn-icon {
+  padding: 0.5rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: none;
+  min-width: auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.btn-icon:hover {
+  color: var(--accent-purple);
+  background-color: rgba(139, 92, 246, 0.1);
+  transform: translateY(-1px);
+}
+
+.dark .btn-icon {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #9CA3AF;
+}
+
+.btn-icon:active {
+  transform: scale(0.9);
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark .btn-icon:active {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+
+.btn-group {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-group .btn {
+  flex: 1;
+  min-width: 80px;
+}
+
+/* Action buttons container */
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin: 1rem 0;
+  position: relative;
+  z-index: 1;
+}
+
+.action-buttons .btn {
+  width: 100%;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  border-radius: 12px;
+}
+
+.action-buttons .btn i {
+  font-size: 1.25rem;
+}
+
+/* Input styles */
+input, textarea, select {
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
 }
 
 /* Person-related styles */
@@ -19,11 +229,12 @@
   padding: 1rem;
   margin-bottom: 1rem;
   border: 1px solid var(--border-color);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  /* isolation: auto; */ /* May interfere with dropdown positioning */
-  overflow: visible !important; /* Ensure dropdowns aren't clipped */
+  transition: all 0.2s ease;
+  isolation: auto;
+  overflow: visible !important; /* Ensure dropdowns are not clipped */
   position: relative;
-  z-index: 2; /* Above base card */
+  z-index: 2;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   transform-origin: center center;
   will-change: transform;
 }
@@ -40,11 +251,10 @@
   padding: 0.5rem;
   border-radius: 8px;
   cursor: pointer;
-  /* isolation: auto; */
-  overflow: visible !important;
+  isolation: auto;
+  overflow: visible !important; /* Ensure content isn't clipped */
   position: relative;
-  z-index: 3; /* Above person-field */
-  transition: background-color 0.2s ease;
+  z-index: 3;
 }
 
 .person-name:hover {
@@ -59,32 +269,35 @@
   margin-bottom: 0.5rem;
 }
 
-.food-price { /* Consider renaming if it's an input */
+.food-price {
   flex: 1;
   padding: 0.5rem;
   border-radius: 8px;
   border: 1px solid var(--border-color);
   font-size: 0.875rem;
-  background-color: var(--bg-card); /* Ensure background for input */
-  color: var(--text-primary); /* Ensure text color for input */
 }
 
-/* Metric cards (Dashboard/Stats) */
+.add-item-btn {
+  padding: 0.25rem;
+  border-radius: 6px;
+  color: var(--accent-blue);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.add-item-btn:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Metric cards */
 .metric-card {
   position: relative;
   border-radius: 16px;
   padding: 16px;
   display: flex;
   flex-direction: column;
-  aspect-ratio: 1 / 1; /* Maintain square aspect ratio */
-  background-color: var(--bg-card); /* Ensure background */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.metric-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  aspect-ratio: 1;
 }
 
 .metric-card .icon {
@@ -98,8 +311,7 @@
 .metric-card .value {
   font-size: 24px;
   font-weight: 700;
-  margin-top: auto; /* Push value to bottom */
-  color: var(--text-primary); /* Ensure color */
+  margin-top: auto;
 }
 
 .metric-card .label {
@@ -107,117 +319,146 @@
   color: var(--text-secondary);
 }
 
-/* Statistics Page Specific Card Styles */
-.stats-container {
-  padding: 1rem;
+/* Progress circle */
+.progress-circle {
+  position: relative;
+  width: 80px; /* Default size */
+  height: 80px; /* Default size */
 }
 
-.stats-card {
+.progress-circle__value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Specific progress circle for stats */
+.health-progress-circle {
+  position: relative;
+  width: 120px; /* Size for stats page */
+  height: 120px; /* Size for stats page */
+  margin: 0 auto;
+}
+
+.progress-circle-bg {
+  fill: none;
+  stroke: rgba(139, 92, 246, 0.2);
+  stroke-width: 8;
+}
+
+.progress-circle-value {
+  fill: none;
+  stroke: #8B5CF6;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.5s ease;
+}
+
+.progress-circle-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  fill: var(--text-primary);
+}
+
+.dark .progress-circle-text {
+  fill: var(--text-primary);
+}
+
+
+/* Toast notifications */
+#toastContainer {
+  position: fixed;
+  bottom: 80px !important; /* Adjusted for floating nav */
+  right: 20px;
+  z-index: 10001;
+}
+
+.toast {
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  max-width: 300px; /* Max width on mobile */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  /* Animations are in animations.css */
+}
+
+/* Modal styles */
+.modal-content {
+  background-color: var(--bg-card);
   border-radius: 16px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  background-color: var(--bg-card); /* Default to bg-card */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  overflow: hidden; /* Prevent overflow issues */
-  transition: background-color 0.3s ease;
+  box-shadow: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px var(--shadow-color);
+  position: relative;
+  z-index: 10000;
+  /* Animation is in animations.css */
 }
 
-.dark .stats-card {
-  background-color: #1E1E24; /* Specific dark mode stats card */
+/* Dropdown styles */
+.name-dropdown {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+  position: absolute; /* Position will be handled by JS */
+  z-index: 9999; /* High z-index */
+  width: auto; /* Width calculated by JS */
+  min-width: 150px; /* Minimum width */
+  margin-top: 0.25rem;
+  background-color: var(--bg-card);
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  transform-origin: top;
+  transition: all 0.2s ease;
+  padding: 0.5rem;
+  opacity: 0; /* Start hidden */
+  transform: scale(0.95) translateY(-10px); /* Start scaled down */
+  pointer-events: none; /* Disable interactions when hidden */
 }
 
-/* Ensure light mode forces light background if needed */
-html:not(.dark) .stats-card-dark {
-  background-color: #f9fafb;
-  color: #111827;
+.name-dropdown.show {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
 }
 
-/* Ensure dark mode forces dark background if needed */
-.dark .stats-card-light { /* Example if you had light cards forced */
-   background-color: #1E1E24;
-   color: white;
+/* Ensure dropdowns have a proper z-index when fixed position is applied by JS */
+.name-dropdown[style*="position: fixed"] {
+  z-index: 9999 !important;
 }
 
-
-.stats-header {
-  display: flex;
-  justify-content: space-between;
+/* History meta tags */
+.history-meta-tag {
+  display: inline-flex;
   align-items: center;
-  margin-bottom: 1rem;
-}
-
-.stats-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary); /* Use variable */
-}
-
-.stats-period {
-  font-size: 0.875rem;
-  color: var(--text-secondary); /* Use variable */
-}
-
-/* Health Statistics Specific Card */
-.health-stats-card {
-  background-color: var(--bg-primary); /* Use primary background */
-  color: var(--text-primary);
-  border-radius: 1.5rem;
-  padding: 1.25rem; /* Adjusted padding */
-  margin-bottom: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.dark .health-stats-card {
-  background-color: #1e1e1e; /* Specific dark background */
-  color: white;
-}
-
-.health-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.health-stats-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  padding: 0.5rem 0;
-}
-
-/* Health Stat Header Tag */
-.health-stats-header p {
+  gap: 0.5rem;
   padding: 0.5rem 1rem;
   background-color: rgba(139, 92, 246, 0.1);
   border-radius: 1rem;
   font-size: 0.875rem;
-  color: var(--text-secondary); /* Use variable */
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+  color: #6B7280;
+  transition: all 0.2s ease;
 }
 
-.dark .health-stats-header p {
+.dark .history-meta-tag {
   background-color: rgba(139, 92, 246, 0.15);
-  color: #9CA3AF; /* Specific dark color */
+  color: #9CA3AF;
 }
 
-.health-stats-header i {
-  color: var(--accent-purple); /* Use variable */
+.history-meta-tag i {
+  color: #8B5CF6;
+  font-size: 1rem;
 }
 
-.health-stats-title { /* Re-defined? Consolidate with .stats-title if same */
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary);
+.history-meta-tag:hover {
+  background-color: rgba(139, 92, 246, 0.15);
+  transform: translateY(-1px);
 }
 
+/* Health Stats Card specific components */
 .health-stats-value {
-  color: var(--text-primary);
+  color: #111827;
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
@@ -229,142 +470,119 @@ html:not(.dark) .stats-card-dark {
 
 .health-stats-label {
   font-size: 0.75rem;
-  color: var(--text-secondary);
+  color: #9ca3af;
 }
 
 .dark .health-stats-label {
-  color: #9ca3af; /* Keep specific if needed */
+  color: #9ca3af;
 }
 
 .health-stats-subtitle {
   font-size: 1rem;
-  color: var(--text-secondary);
+  color: #9ca3af;
 }
+
+.health-progress-circle { /* Already defined above, added here for clarity within section */
+    /* styles defined above */
+}
+
+.health-progress-circle svg {
+  transform: rotate(-90deg);
+}
+
+.health-progress-circle circle {
+  fill: none;
+  stroke-width: 12;
+  stroke-linecap: round;
+}
+
+.health-progress-circle .bg {
+  stroke: rgba(255, 255, 255, 0.1); /* Different background for health? Check design */
+  /* If same as regular progress, use var(--border-color) or similar */
+   stroke: rgba(139, 92, 246, 0.2); /* Using standard progress bg color */
+}
+
+.dark .health-progress-circle .bg {
+    stroke: rgba(139, 92, 246, 0.2);
+}
+
+.health-progress-circle .progress {
+  stroke: #4ade80; /* Specific color for health progress */
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.health-progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.health-progress-percentage {
+  font-size: 1rem; /* Smaller size for health */
+  font-weight: 700;
+}
+
 
 .health-table {
   width: 100%;
   text-align: center;
   border-spacing: 10px;
-  border-collapse: separate; /* Use separate borders with spacing */
+  border-collapse: separate;
 }
 
 .health-table td {
   padding: 8px;
   font-size: 0.875rem;
-  color: var(--text-primary); /* Use variable */
 }
 
 .health-normal {
-  color: var(--accent-green); /* Use variable */
+  color: #4ade80;
 }
 
 .health-above-normal {
-  color: #f97316; /* Consider making this an accent variable */
+  color: #f97316;
 }
 
 .glucose-icon {
-  color: var(--accent-red); /* Use variable */
+  color: #ef4444;
   font-size: 1.5rem;
 }
 
 .blood-drop {
-  color: var(--accent-red); /* Use variable */
+  color: #ef4444;
   margin-left: 0.25rem;
 }
 
-/* Modal styles */
-.modal-content {
-  background-color: var(--bg-card);
-  border-radius: 16px;
-  box-shadow: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px var(--shadow-color);
-  position: relative; /* Typically controlled by modal JS */
-  z-index: 10000; /* High z-index for modals */
-  animation: modalFadeIn 0.3s ease forwards; /* Apply animation */
-  /* Add padding, max-width etc. as needed */
-  padding: 1.5rem;
-  max-width: 500px; /* Example max-width */
-  margin: 1rem auto; /* Center horizontally */
+/* Scrollbar for history list */
+#historyList {
+  scrollbar-width: thin;
+  scrollbar-color: #e5e7eb #f3f4f6;
 }
 
-/* Toast notifications */
-#toastContainer { /* Container positioning */
-  position: fixed;
-  bottom: 80px !important; /* Above floating nav */
-  right: 20px;
-  z-index: 10001; /* Above modals */
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+.dark #historyList {
+  scrollbar-color: #374151 #1f2937;
 }
 
-.toast {
-  background-color: var(--bg-card); /* Use card background */
-  color: var(--text-primary); /* Use primary text */
-  border-radius: 12px;
-  padding: 12px 16px;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  animation: slideInRight 0.3s ease forwards, fadeOut 0.3s ease 2.7s forwards; /* In/Out animation */
-  max-width: 300px; /* Limit width */
-  border: 1px solid var(--border-color); /* Add subtle border */
-  /* Add styles for different toast types (success, error, info) */
+#historyList::-webkit-scrollbar {
+  width: 8px;
 }
 
-.toast.success {
-    background-color: var(--accent-green);
-    color: white;
-    border-color: var(--accent-green);
-}
-html:not(.dark) .toast.success {
-    color: var(--text-primary); /* Dark text on light green */
+#historyList::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
 }
 
-.toast.error {
-    background-color: var(--accent-red);
-    color: white;
-    border-color: var(--accent-red);
+.dark #historyList::-webkit-scrollbar-track {
+  background: #1f2937;
 }
 
-.toast.info {
-    background-color: var(--accent-blue);
-    color: white;
-    border-color: var(--accent-blue);
+#historyList::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 4px;
 }
 
-
-/* History List Item Meta Tags (Could be considered components) */
-.history-meta-info {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 0.75rem;
-  flex-wrap: wrap; /* Allow wrapping on small screens */
-}
-
-.history-meta-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background-color: rgba(139, 92, 246, 0.1);
-  border-radius: 1rem;
-  font-size: 0.875rem;
-  color: var(--text-secondary); /* Use variable */
-  transition: all 0.2s ease;
-}
-
-.dark .history-meta-tag {
-  background-color: rgba(139, 92, 246, 0.15);
-  color: #9CA3AF; /* Specific dark color */
-}
-
-.history-meta-tag i {
-  color: var(--accent-purple); /* Use variable */
-  font-size: 1rem;
-}
-
-.history-meta-tag:hover {
-  background-color: rgba(139, 92, 246, 0.15);
-  transform: translateY(-1px);
+.dark #historyList::-webkit-scrollbar-thumb {
+  background: #374151;
 }

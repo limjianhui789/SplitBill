@@ -1,60 +1,83 @@
-/* ==============================================
-   Issue Fixes & Overrides
-   ============================================== */
+/* SplitInvoice Custom Styles - Issue Fixes
+   Contains specific overrides and fixes identified (e.g., April 1, 2025). */
 
-/* Fix 1 & 2: Ensure button text/icons are visible in light mode for specific buttons */
-/* Applied April 1, 2025 */
+/* Fix 1 & 2: Ensure button text/icons are visible in light mode */
 html:not(.dark) #saveBillBtn,
 html:not(.dark) #saveBillBtn i {
-  /* Ensure dark text on light purple/green backgrounds for these specific IDs */
-  color: var(--text-primary) !important;
+  color: var(--text-primary) !important; /* Dark text on light purple/green */
 }
 
-/* Fix z-index on name-dropdown to display above overlapping elements */
-/* Increased specificity to ensure override */
-body .name-dropdown {
-    z-index: 10000 !important; /* Very high z-index for dropdowns potentially appended to body */
+/* Fix for dropdown z-index issues (Ensuring it's above other elements) */
+.name-dropdown {
+  /* Basic dropdown styles */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+  position: absolute; /* Position will be controlled by JS, but keep absolute as fallback */
+  z-index: 9999; /* High z-index */
+  width: auto; /* Let content determine width, JS might override */
+  margin-top: 0.25rem;
+  background-color: var(--bg-card);
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  transform-origin: top;
 }
 
-/* Ensure specific button overrides for center nav button are applied */
-/* These might conflict if .nav-item-center is used elsewhere, consider refining selector if needed */
-.bottom-navigation .relative { /* Target the wrapper */
-  margin-top: 0 !important; /* Reset potential margin shifts */
+/* Increased specificity for body-appended dropdowns */
+body > .name-dropdown {
+    z-index: 10000 !important; /* Even higher z-index */
+    position: fixed !important; /* Force fixed when appended to body */
 }
 
-.bottom-navigation .nav-item-center {
-  width: 56px !important; /* Explicit size */
-  height: 56px !important;
-  background-color: var(--accent-purple) !important;
-  border-radius: 50% !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4) !important;
-  position: relative !important; /* Ensure it respects the wrapper */
-  z-index: 10 !important; /* Above other nav items */
-  margin: 0 !important; /* Reset margins */
-  transform: translateY(0) !important; /* Reset transforms */
-  border: 3px solid var(--bg-card); /* Add border for cutout effect */
+
+/* Ensure person-field containers do not clip their absolutely positioned children */
+.person-field {
+    overflow: visible !important;
+    position: relative; /* Ensure it establishes a stacking context if needed, but allows overflow */
+    z-index: 2; /* Adjust z-index relative to siblings */
 }
 
-/* Adjust border color based on theme for cutout effect */
-html.dark .bottom-navigation .nav-item-center {
-    border-color: rgba(45, 45, 45, 0.95) !important; /* Dark nav background */
-}
-html:not(.dark) .bottom-navigation .nav-item-center {
-    border-color: rgba(255, 255, 255, 0.95) !important; /* Light nav background */
+.person-name {
+    position: relative; /* Ensure it establishes a stacking context */
+    z-index: 3; /* Above person-field content */
 }
 
-.bottom-navigation .nav-item-center:active {
-  transform: scale(0.95) !important; /* Keep active state */
+/* Lower z-index for potentially overlapping elements */
+.action-buttons {
+  position: relative;
+  z-index: 1; /* Lower than person-field and dropdown */
 }
 
-.bottom-navigation .nav-item-center i {
-  color: #FFFFFF !important; /* White icon */
-  font-size: 24px !important;
-  margin: 0 !important; /* Reset icon margin */
+/* Remove potentially problematic JS comments from CSS */
+/* JS code related to dropdown positioning should be in the JS file. */
+
+/* Scrollbar styling for history list */
+#historyList {
+  scrollbar-width: thin;
+  scrollbar-color: #e5e7eb #f3f4f6; /* Light mode scrollbar */
 }
 
-/* Note: JS comments related to dropdown positioning were removed as they belong in JS files */
-/* Note: Removed duplicate health stats card styles as they should be in components.css */
+.dark #historyList {
+  scrollbar-color: #374151 #1f2937; /* Dark mode scrollbar */
+}
+
+#historyList::-webkit-scrollbar {
+  width: 8px;
+}
+
+#historyList::-webkit-scrollbar-track {
+  background: #f3f4f6; /* Light mode track */
+  border-radius: 4px;
+}
+
+.dark #historyList::-webkit-scrollbar-track {
+  background: #1f2937; /* Dark mode track */
+}
+
+#historyList::-webkit-scrollbar-thumb {
+  background: #e5e7eb; /* Light mode thumb */
+  border-radius: 4px;
+}
+
+.dark #historyList::-webkit-scrollbar-thumb {
+  background: #374151; /* Dark mode thumb */
+}

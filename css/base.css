@@ -1,32 +1,44 @@
-/* Base Styles */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@600&display=swap');
+
+
+/* SplitInvoice Custom Styles - Base
+   Contains imports, variables, body styles, and basic typography */
+
+:root {
+  /* Light mode variables */
+  --bg-primary: #f9fafb;
+  --bg-card: #ffffff;
+  --text-primary: #121214;
+  --text-secondary: #4b5563;
+  --accent-green: #4ADE80;
+  --accent-red: #EF4444;
+  --accent-purple: #8B5CF6;
+  --accent-blue: #3B82F6;
+  --border-color: rgba(229, 231, 235, 1);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+  /* Dark mode variables */
+  --bg-primary: #121214;
+  --bg-card: #1E1E24;
+  --text-primary: #FFFFFF;
+  --text-secondary: #9CA3AF;
+  --border-color: rgba(255, 255, 255, 0.05);
+  --shadow-color: rgba(0, 0, 0, 0.2);
+}
 
 body {
+
   background-color: var(--bg-primary);
   color: var(--text-primary);
   transition: background-color 0.3s ease, color 0.3s ease;
-  padding-bottom: 70px; /* Original padding, may be overridden by safe-bottom */
-  -webkit-tap-highlight-color: transparent;
-  overscroll-behavior-y: none;
-  touch-action: manipulation;
-  scroll-behavior: smooth;
-}
-
-/* Card styles */
-.app-card {
-  background-color: var(--bg-card);
-  border-radius: 16px;
-  padding: 16px 20px;
-  box-shadow: 0px 4px 12px var(--shadow-color);
-  border: 1px solid var(--border-color);
-  position: relative;
-  z-index: 1;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  transform: translateZ(0);
-  will-change: transform;
+  padding-bottom: 70px; /* Adjusted later based on navigation */
 }
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
+
   font-weight: 700;
 }
 
@@ -34,62 +46,10 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-secondary);
 }
 
-/* Input styles */
-input, textarea, select {
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-card);
-  color: var(--text-primary);
-  padding: 0.5rem; /* Added default padding */
-  transition: all 0.2s;
-}
-
-input:focus, textarea:focus, select:focus {
-  border-color: var(--accent-purple);
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
-  outline: none; /* Remove default focus outline */
-}
-
-/* Mobile app styling */
-.mobile-full-height {
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-}
-
-/* Adjust bottom padding for better spacing with the floating navigation */
-.safe-bottom {
-  padding-bottom: calc(env(safe-area-inset-bottom) + 90px) !important;
-}
-
-
-/* Scrollbar styles for #historyList */
-#historyList {
-  scrollbar-width: thin;
-  scrollbar-color: #e5e7eb #f3f4f6;
-}
-
-.dark #historyList {
-  scrollbar-color: #374151 #1f2937;
-}
-
-#historyList::-webkit-scrollbar {
-  width: 8px;
-}
-
-#historyList::-webkit-scrollbar-track {
-  background: #f3f4f6;
-  border-radius: 4px;
-}
-
-.dark #historyList::-webkit-scrollbar-track {
-  background: #1f2937;
-}
-
-#historyList::-webkit-scrollbar-thumb {
-  background: #e5e7eb;
-  border-radius: 4px;
-}
-
-.dark #historyList::-webkit-scrollbar-thumb {
-  background: #374151;
+/* Base mobile styling */
+html, body {
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+  touch-action: manipulation;
+  scroll-behavior: smooth;
 }
