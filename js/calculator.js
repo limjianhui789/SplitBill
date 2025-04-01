@@ -67,10 +67,82 @@ const Calculator = {
       `;
 
       totalFoodPrice += personTotal;
-      totalTaxAmount += taxAmount;
-      totalAdditionalFee += personAdditionalFee;
-      totalAmount += personTotalAmount;
+      // Note: Tax and Additional Fee are currently calculated per person based on their items.
+      // Scanned items are not assigned to a person, so they won't directly affect per-person tax/fee share here.
+      // Tax and Fee will be applied based on the overall totalFoodPrice later.
+      // totalTaxAmount += taxAmount; // This is calculated later based on combined food total
+      // totalAdditionalFee += personAdditionalFee; // This is calculated later based on combined food total
+      // totalAmount += personTotalAmount; // This is calculated later based on combined food total + tax + fee
     }
+
+    // Add prices from the general scanned items section
+    let totalScannedItemsPrice = 0;
+    const scannedItemInputs = document.querySelectorAll('#scannedItemsList .scanned-item-price');
+    scannedItemInputs.forEach(input => {
+        const price = parseFloat(input.value);
+        if (!isNaN(price)) {
+            totalScannedItemsPrice += price;
+        }
+    });
+    totalFoodPrice += totalScannedItemsPrice; // Add scanned items total to the overall food total
+
+    // Now calculate overall tax and total based on the combined food price
+    totalTaxAmount = totalFoodPrice * (taxPercentage / 100);
+    // Distribute additional fee evenly across people *and* the general scanned items pool (conceptually)
+    // Or simply add the total additional fee to the grand total. Let's add it to the grand total for simplicity.
+    totalAdditionalFee = additionalFee; // Use the full fee for the grand total calculation
+    totalAmount = totalFoodPrice + totalTaxAmount + totalAdditionalFee;
+
+    // Update individual results display (tax/fee share might be slightly different now if based on overall total)
+    // Re-calculate and update the individual results HTML based on the final totalFoodPrice
+    resultsHTML = ""; // Reset results HTML
+    for (let i = 0; i < personCount; i++) {
+        const personField = personFields[i];
+        const personLabel = personField.getElementsByTagName("h3")[0];
+        const personName = personLabel.textContent;
+        const foodPrices = personField.getElementsByClassName("food-price");
+        let personFoodTotal = 0;
+        for (let j = 0; j < foodPrices.length; j++) {
+            const foodPrice = parseFloat(foodPrices[j].value);
+            if (!isNaN(foodPrice)) {
+                personFoodTotal += foodPrice;
+            }
+        }
+
+        // Calculate share of tax and fee based on proportion of total food cost (excluding scanned items for simplicity here,
+        // as assigning scanned items is complex. Alternatively, distribute based on person count only).
+        // Let's distribute tax/fee based on person count for simplicity, ignoring scanned items for individual share.
+        const personTaxShare = (personFoodTotal / totalFoodPrice) * totalTaxAmount || 0; // Proportionate tax based on food total
+        const personFeeShare = totalAdditionalFee / personCount || 0; // Even split of fee
+        const personTotalAmount = personFoodTotal + personTaxShare + personFeeShare;
+
+        // Regenerate individual results HTML with updated shares
+         resultsHTML += `
+           <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+             <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">${personName}</h3>
+             <div class="space-y-1 text-sm">
+               <div class="flex justify-between">
+                 <span class="text-gray-600 dark:text-gray-300">Food Total:</span>
+                 <span class="font-medium">${Utils.formatCurrency(personFoodTotal)}</span>
+               </div>
+               <div class="flex justify-between">
+                 <span class="text-gray-600 dark:text-gray-300">Tax Share:</span>
+                 <span class="font-medium">${Utils.formatCurrency(personTaxShare)}</span>
+               </div>
+               <div class="flex justify-between">
+                 <span class="text-gray-600 dark:text-gray-300">Fee Share:</span>
+                 <span class="font-medium">${Utils.formatCurrency(personFeeShare)}</span>
+               </div>
+               <div class="flex justify-between pt-1 border-t dark:border-gray-700">
+                 <span class="font-semibold text-gray-800 dark:text-white">Total Due:</span>
+                 <span class="font-bold text-primary-600 dark:text-primary-400">${Utils.formatCurrency(personTotalAmount)}</span>
+               </div>
+             </div>
+           </div>
+         `;
+    }
+
+
 
     // Overall total section
     resultsHTML += `
@@ -78,17 +150,17 @@ const Calculator = {
         <h3 class="text-xl font-bold text-accent-purple dark:text-accent-purple mb-3">Total Bill</h3>
         <div class="space-y-2">
           <div class="flex justify-between">
-            <span class="text-gray-700 dark:text-gray-300">Food Total:</span>
+            <span class="text-gray-700 dark:text-gray-300">Subtotal (All Food + Scanned):</span>
             <span class="font-medium text-gray-900 dark:text-white">${Utils.formatCurrency(totalFoodPrice)}</span>
           </div>
-          <div class="flex justify-between">
-            <span class="text-gray-700 dark:text-gray-300">Tax (${taxPercentage}%):</span>
-            <span class="font-medium text-gray-900 dark:text-white">${Utils.formatCurrency(totalTaxAmount)}</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="text-gray-700 dark:text-gray-300">Additional Fee:</span>
-            <span class="font-medium text-gray-900 dark:text-white">${Utils.formatCurrency(totalAdditionalFee)}</span>
-          </div>
+           <div class="flex justify-between">
+             <span class="text-gray-700 dark:text-gray-300">Tax (${taxPercentage}%):</span>
+             <span class="font-medium text-gray-900 dark:text-white">${Utils.formatCurrency(totalTaxAmount)}</span>
+           </div>
+           <div class="flex justify-between">
+             <span class="text-gray-700 dark:text-gray-300">Additional Fee:</span>
+             <span class="font-medium text-gray-900 dark:text-white">${Utils.formatCurrency(totalAdditionalFee)}</span>
+           </div>
           <div class="flex justify-between pt-3 mt-1 border-t dark:border-gray-600">
             <span class="font-bold text-gray-900 dark:text-white text-lg">Grand Total:</span>
             <span class="font-bold text-accent-purple dark:text-accent-purple text-lg">${Utils.formatCurrency(totalAmount)}</span>

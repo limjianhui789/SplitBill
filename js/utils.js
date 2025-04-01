@@ -69,4 +69,20 @@ const Utils = {
     selection.removeAllRanges();
     selection.addRange(range);
   }
+,
+
+  // Escape HTML special characters to prevent XSS
+  escapeHTML: function(str) {
+    if (typeof str !== 'string') return str; // Return non-strings as is
+    return str.replace(/[&<>"']/g, function(tag) {
+      const chars_to_replace = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;'
+      };
+      return chars_to_replace[tag] || tag;
+    });
+  }
 }; 

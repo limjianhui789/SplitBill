@@ -50,6 +50,7 @@
   <script src="js/template.js"></script>
   <script src="js/transitions.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/scan.js"></script>
 </head>
 
 <body class="bg-gray-50 dark:bg-dark-bg text-gray-900 dark:text-white transition-colors duration-200 mobile-full-height text-base leading-relaxed font-sans">
@@ -166,6 +167,18 @@
             <span>Save Group</span>
           </button>
         </div>
+
+        <!-- Scanned Items Section -->
+        <div id="scannedItemsSection" class="space-y-4 bg-blue-50 dark:bg-blue-900/30 p-5 rounded-xl border border-blue-200 dark:border-blue-800 mt-8 hidden" data-aos="fade-up" data-aos-delay="400">
+          <h4 class="text-md font-heading font-semibold text-blue-800 dark:text-blue-300 leading-snug flex items-center gap-2">
+            <i class="ti ti-scan"></i> Scanned Items
+          </h4>
+          <ul id="scannedItemsList" class="space-y-3">
+            <!-- Scanned items will be added here by js/scan.js -->
+             <li class="text-sm text-gray-500 dark:text-gray-400 italic">No items added from scan yet.</li>
+          </ul>
+        </div>
+
 
         <!-- Calculator Input Fields -->
         <div class="space-y-4 bg-gray-50 dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 mt-8" data-aos="fade-up" data-aos-delay="400">
@@ -409,6 +422,66 @@
       </div>
     </div>
   </div>
+
+
+  <!-- Camera Scan Modal -->
+  <div id="scanModal" class="hidden fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm overflow-y-auto h-full w-full z-[5500] flex items-center justify-center p-4">
+    <div class="relative w-full max-w-lg bg-white dark:bg-dark-card shadow-xl rounded-2xl modal-content">
+      <div class="p-6 space-y-4">
+        <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-3">
+          <h3 class="text-lg font-heading font-semibold text-gray-900 dark:text-white leading-snug flex items-center gap-2">
+            <i class="ti ti-scan"></i>Scan Invoice
+          </h3>
+          <button id="closeScanModalBtn" class="p-1 rounded-md text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-purple transition-colors duration-200 ease-in-out" aria-label="Close scanner">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+        
+        <div class="relative aspect-video bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
+          <video id="cameraFeed" class="absolute top-0 left-0 w-full h-full object-cover" playsinline autoplay muted></video>
+          <div id="scanLoadingOverlay" class="hidden absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white">
+             <i class="ti ti-loader animate-spin text-4xl"></i>
+          </div>
+        </div>
+
+        <div class="flex justify-center pt-4 border-t border-gray-200 dark:border-gray-700">
+          <button id="captureScanBtn" class="btn btn-primary flex items-center justify-center gap-2 w-full sm:w-auto">
+            <i class="ti ti-camera"></i> Capture Image
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scan Review Modal -->
+  <div id="scanReviewModal" class="hidden fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm overflow-y-auto h-full w-full z-[5400] flex items-center justify-center p-4">
+    <div class="relative w-full max-w-xl bg-white dark:bg-dark-card shadow-xl rounded-2xl modal-content">
+      <div class="p-6 space-y-4">
+        <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-3">
+          <h3 class="text-lg font-heading font-semibold text-gray-900 dark:text-white leading-snug flex items-center gap-2">
+            <i class="ti ti-playlist-check"></i>Review Scanned Items
+          </h3>
+          <button id="closeReviewModalBtn" class="p-1 rounded-md text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-purple transition-colors duration-200 ease-in-out" aria-label="Close review">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+
+        <div class="max-h-[60vh] overflow-y-auto space-y-3 pr-2" id="scanReviewListContainer">
+          <!-- Scanned items will be populated here by JS -->
+          <p class="text-center text-gray-500 dark:text-gray-400">No items scanned yet.</p> 
+        </div>
+
+        <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-sm text-gray-600 dark:text-gray-400">Scanned Total (for reference): <span id="scannedTotalAmount" class="font-semibold">N/A</span></p>
+        </div>
+
+        <div class="flex justify-end pt-4">
+          <button id="finishReviewBtn" class="btn btn-secondary">Done Reviewing</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="fixed bottom-5 right-5 md:bottom-8 md:right-8 z-[60] space-y-3 w-auto max-w-xs"></div>

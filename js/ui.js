@@ -136,11 +136,14 @@
          // Remove scaling and potentially re-add pulse after action
          setTimeout(() => {
            addButton.classList.remove('transform', 'scale-110');
-            // Add new person field action
-            if (typeof Person !== 'undefined' && Person.addPersonField) {
-                Person.addPersonField();
-            }
-
+           // Initiate invoice scan action
+           if (typeof Scan !== 'undefined' && Scan.initiateScan) {
+               Scan.initiateScan();
+           } else {
+               console.error("Scan module or initiateScan function not found.");
+               // Optionally show a user-facing error message
+               // UI.showToast("Scan feature is currently unavailable.", "error");
+           }
            // Restore pulse animation after a delay (optional)
            setTimeout(() => {
              if (!addButton.classList.contains('pulse-animation')) { // Add back only if removed
@@ -778,8 +781,8 @@
                         <span class="text-xs mt-1 font-medium">Stats</span>
                     </a>
                     <div class="relative flex justify-center items-center flex-shrink-0 mx-2"> <!-- Center button container -->
-                        <button id="addButton" class="nav-item-center bg-accent-purple hover:bg-purple-600 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg transform transition-transform hover:scale-105 active:scale-95 relative overflow-hidden -mt-8 border-4 border-white dark:border-dark-bg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-purple dark:focus:ring-offset-dark-bg" aria-label="Add Person or Item">
-                            <i class="ti ti-plus text-3xl"></i>
+                        <button id="addButton" class="nav-item-center bg-accent-purple hover:bg-purple-600 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg transform transition-transform hover:scale-105 active:scale-95 relative overflow-hidden -mt-8 border-4 border-white dark:border-dark-bg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-purple dark:focus:ring-offset-dark-bg" aria-label="Scan Invoice">
+                            <i class="ti ti-scan text-3xl"></i>
                         </button>
                     </div>
                     <button id="historyBtnNav" class="nav-item flex flex-col items-center px-3 py-1 text-gray-500 dark:text-gray-400 hover:text-accent-purple dark:hover:text-accent-purple transition-colors duration-200 rounded-lg" aria-label="View History">
