@@ -77,79 +77,86 @@
   </nav>
 
   <!-- Main Content -->
-  <div class="min-h-screen p-6 md:p-8 pb-28 safe-bottom">
+  <div class="min-h-screen p-4 sm:p-6 md:p-8 pb-28 safe-bottom"> <!-- Adjusted padding for smaller screens -->
     <div class="app-container max-w-2xl mx-auto">
-      <div class="app-card bg-white dark:bg-dark-card rounded-2xl shadow-lg p-6 md:p-8 space-y-8">
+      <div class="app-card bg-white dark:bg-dark-card rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8"> <!-- Adjusted padding and spacing -->
         <!-- Greeting Section with Date -->
         <div data-aos="fade-down" data-aos-delay="100">
           <div class="flex justify-between items-center">
-            <h2 class="text-2xl font-heading font-semibold text-gray-800 dark:text-white leading-tight" id="greeting">Hello!</h2>
-            <span class="text-sm text-gray-500 dark:text-gray-400" id="currentDate"></span>
+            <h2 class="text-xl sm:text-2xl font-heading font-semibold text-gray-800 dark:text-white leading-tight" id="greeting">Hello!</h2>
+            <span class="text-xs sm:text-sm text-gray-500 dark:text-gray-400" id="currentDate"></span>
           </div>
         </div>
         
         <!-- Title Section -->
-        <div class="text-center space-y-2" data-aos="fade-up" data-aos-delay="150">
-          <h2 class="text-2xl font-heading font-semibold text-gray-800 dark:text-white leading-tight">Split Bill Calculator</h2>
-          <p class="text-gray-500 dark:text-gray-400 text-sm">Easy way to split your restaurant bill</p>
+        <div class="text-center space-y-1 sm:space-y-2" data-aos="fade-up" data-aos-delay="150">
+          <h2 class="text-xl sm:text-2xl font-heading font-semibold text-gray-800 dark:text-white leading-tight">Split Bill Calculator</h2>
+          <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">Easy way to split your restaurant bill</p>
         </div>
 
         <!-- Illustration Section -->
-        <div class="my-6 text-center" data-aos="fade-up" data-aos-delay="180">
-          <img src="https://images.undraw.co/undraw_receipt_re_fre3.svg" alt="Bill splitting illustration" class="mx-auto h-56 w-auto text-accent-purple dark:text-accent-purple">
+        <div class="my-4 sm:my-6 text-center" data-aos="fade-up" data-aos-delay="180">
+          <img src="https://images.undraw.co/undraw_receipt_re_fre3.svg" alt="Bill splitting illustration" class="mx-auto h-40 sm:h-56 w-auto text-accent-purple dark:text-accent-purple">
         </div>
 
         <!-- Restaurant and Location Section -->
-        <div class="space-y-4 mb-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="space-y-4 mb-4 sm:mb-6" data-aos="fade-up" data-aos-delay="200">
           <div class="flex flex-col sm:flex-row gap-4">
             <div class="flex-1">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                 <i class="ti ti-tools-kitchen-2 mr-1"></i> Restaurant
               </label>
               <input type="text" id="restaurantInput" 
-                class="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-purple focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500"
+                class="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-purple focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500 text-sm sm:text-base"
                 placeholder="Enter restaurant name">
             </div>
             <div class="flex-1">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                 <i class="ti ti-map-pin mr-1"></i> Location
               </label>
               <input type="text" id="locationInput" 
-                class="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-purple focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500"
+                class="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-purple focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500 text-sm sm:text-base"
                 placeholder="Enter location">
             </div>
           </div>
         </div>
 
         <!-- Person List Section -->
-        <div id="personFields" class="space-y-6">
-          <div class="person-field bg-white dark:bg-dark-card p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-transform space-y-4" data-aos="fade-up" data-aos-delay="250">
+        <div id="personFields" class="space-y-5 sm:space-y-6">
+          <div class="person-field bg-white dark:bg-dark-card p-4 sm:p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-transform space-y-3 sm:space-y-4" data-aos="fade-up" data-aos-delay="250">
             <div class="relative">
               <div
-                class="personName text-lg font-heading font-semibold text-center mb-3 text-gray-700 dark:text-white cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded dropdown-toggle leading-snug">
+                class="personName text-base sm:text-lg font-heading font-semibold text-center mb-2 sm:mb-3 text-gray-700 dark:text-white cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded dropdown-toggle leading-snug">
                 <h3 contenteditable="true" class="outline-none">Person 1</h3>
               </div>
               <div
                 class="name-dropdown hidden absolute z-10 w-full mt-1 bg-white dark:bg-dark-card rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
                 <div class="p-3 space-y-2">
-                  <input type="text" class="new-name-input w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white"
+                  <input type="text" class="new-name-input w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white text-sm sm:text-base"
                     placeholder="Add new name">
                   <div class="flex gap-2">
-                    <button class="add-name-btn btn flex-1 bg-accent-green text-white hover:bg-green-600 focus:ring-offset-2 focus:ring-accent-green shadow-sm border border-transparent rounded-md px-4 py-2 text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-2">Save Name</button>
-                    <button class="add-temp-name-btn btn flex-1 border border-accent-purple text-accent-purple hover:bg-accent-purple/10 dark:hover:bg-accent-purple/20 focus:ring-offset-2 focus:ring-accent-purple shadow-sm rounded-md px-4 py-2 text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-2">Use Once</button>
+                    <button class="add-name-btn btn flex-1 bg-accent-green text-white hover:bg-green-600 focus:ring-offset-2 focus:ring-accent-green shadow-sm border border-transparent rounded-md px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-1 sm:gap-2">Save Name</button>
+                    <button class="add-temp-name-btn btn flex-1 border border-accent-purple text-accent-purple hover:bg-accent-purple/10 dark:hover:bg-accent-purple/20 focus:ring-offset-2 focus:ring-accent-purple shadow-sm rounded-md px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-1 sm:gap-2">Use Once</button>
                   </div>
                 </div>
                 <div class="saved-names-list max-h-40 overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700"></div>
               </div>
             </div>
-            <ul class="person-food-list space-y-3">
-              <li class="flex items-center gap-3">
+            <ul class="person-food-list space-y-2 sm:space-y-3">
+              <li class="food-item-row flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
                 <input type="text"
-                  class="food-price flex-1 px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-purple focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500"
-                  placeholder="Price" oninput="Utils.handleCalculatorInput(this)">
+                  class="food-item-name flex-grow px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-purple focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500 text-sm sm:text-base"
+                  placeholder="Item Name">
+                <input type="text"
+                  class="food-price w-full sm:w-28 px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-purple focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500 text-sm sm:text-base"
+                  placeholder="Price" inputmode="decimal" oninput="Utils.handleCalculatorInput(this)">
+                <button type="button" onclick="Person.removeFoodItem(this)"
+                        class="remove-food-btn p-1.5 sm:p-2 rounded-full text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 ease-in-out self-center sm:self-auto">
+                  <i class="ti ti-minus text-lg sm:text-xl"></i>
+                </button>
                 <button type="button" onclick="Person.addFoodItem(this)"
-                  class="p-2 rounded-full text-accent-blue hover:text-blue-700 dark:text-accent-blue dark:hover:text-blue-400 hover:bg-blue-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-blue transition-colors duration-200 ease-in-out">
-                  <i class="ti ti-plus text-xl"></i>
+                  class="add-food-btn p-1.5 sm:p-2 rounded-full text-accent-blue hover:text-blue-700 dark:text-accent-blue dark:hover:text-blue-400 hover:bg-blue-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-blue transition-colors duration-200 ease-in-out self-center sm:self-auto">
+                  <i class="ti ti-plus text-lg sm:text-xl"></i>
                 </button>
               </li>
             </ul>
@@ -157,87 +164,87 @@
         </div>
 
         <!-- Person Buttons -->
-        <div class="btn-group mt-6 flex flex-wrap gap-3 justify-center">
-          <button type="button" onclick="Person.addPersonField()" class="btn bg-accent-purple text-white hover:bg-purple-700 focus:ring-offset-2 focus:ring-accent-purple shadow-sm border border-transparent rounded-md px-4 py-2 text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-2" data-aos="fade-up" data-aos-delay="500">
-            <i class="ti ti-user-plus"></i>
+        <div class="btn-group mt-4 sm:mt-6 flex flex-wrap gap-2 sm:gap-3 justify-center"> <!-- Reduced gap -->
+          <button type="button" onclick="Person.addPersonField()" class="btn bg-accent-purple text-white hover:bg-purple-700 focus:ring-offset-2 focus:ring-accent-purple shadow-sm border border-transparent rounded-md px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-1 sm:gap-2" data-aos="fade-up" data-aos-delay="500">
+            <i class="ti ti-user-plus text-base sm:text-lg"></i> <!-- Adjusted icon size -->
             <span>Add Person</span>
           </button>
-          <button type="button" id="groupSaveBtn" class="btn bg-accent-green text-white hover:bg-green-600 focus:ring-offset-2 focus:ring-accent-green shadow-sm border border-transparent rounded-md px-4 py-2 text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-2" data-aos="fade-up" data-aos-delay="550">
-            <i class="ti ti-users"></i>
+          <button type="button" id="groupSaveBtn" class="btn bg-accent-green text-white hover:bg-green-600 focus:ring-offset-2 focus:ring-accent-green shadow-sm border border-transparent rounded-md px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-1 sm:gap-2" data-aos="fade-up" data-aos-delay="550">
+            <i class="ti ti-users text-base sm:text-lg"></i>
             <span>Save Group</span>
           </button>
         </div>
 
         <!-- Scanned Items Section -->
-        <div id="scannedItemsSection" class="space-y-4 bg-blue-50 dark:bg-blue-900/30 p-5 rounded-xl border border-blue-200 dark:border-blue-800 mt-8 hidden" data-aos="fade-up" data-aos-delay="400">
-          <h4 class="text-md font-heading font-semibold text-blue-800 dark:text-blue-300 leading-snug flex items-center gap-2">
+        <div id="scannedItemsSection" class="space-y-3 sm:space-y-4 bg-blue-50 dark:bg-blue-900/30 p-4 sm:p-5 rounded-xl border border-blue-200 dark:border-blue-800 mt-6 sm:mt-8 hidden" data-aos="fade-up" data-aos-delay="400">
+          <h4 class="text-sm sm:text-md font-heading font-semibold text-blue-800 dark:text-blue-300 leading-snug flex items-center gap-2">
             <i class="ti ti-scan"></i> Scanned Items
           </h4>
-          <ul id="scannedItemsList" class="space-y-3">
+          <ul id="scannedItemsList" class="space-y-2 sm:space-y-3">
             <!-- Scanned items will be added here by js/scan.js -->
-             <li class="text-sm text-gray-500 dark:text-gray-400 italic">No items added from scan yet.</li>
+             <li class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 italic">No items added from scan yet.</li>
           </ul>
         </div>
 
 
         <!-- Calculator Input Fields -->
-        <div class="space-y-4 bg-gray-50 dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 mt-8" data-aos="fade-up" data-aos-delay="400">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="space-y-3 sm:space-y-4 bg-gray-50 dark:bg-gray-800 p-4 sm:p-5 rounded-xl border border-gray-100 dark:border-gray-700 mt-6 sm:mt-8" data-aos="fade-up" data-aos-delay="400">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div class="calculator-field">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                 <i class="ti ti-percentage mr-1"></i> Tax (%)
               </label>
               <input type="number" id="taxInput"
-                class="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-purple focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500"
+                class="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-purple focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500 text-sm sm:text-base"
                 placeholder="Enter tax percentage">
             </div>
 
             <div class="calculator-field">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
                 <i class="ti ti-currency-dollar mr-1"></i> Additional Fee
               </label>
               <input type="number" id="additionalFeeInput" value="0"
-                class="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-purple focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500"
+                class="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-purple focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500 text-sm sm:text-base"
                 placeholder="Enter additional fee">
             </div>
           </div>
           
           <div class="calculator-field">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">
               <i class="ti ti-notes mr-1"></i> Notes
             </label>
-            <textarea id="notesInput" rows="3"
-              class="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-purple focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500"
+            <textarea id="notesInput" rows="2" sm:rows="3"
+              class="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-purple focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500 text-sm sm:text-base"
               placeholder="Add any notes about this bill..."></textarea>
           </div>
         </div>
         
         <!-- Operation Buttons -->
-        <div class="action-buttons flex flex-wrap gap-3 justify-center border-t border-gray-200 dark:border-gray-700 pt-6 mt-8">
-          <button type="button" onclick="Calculator.calculate()" class="btn bg-accent-purple hover:bg-purple-700 focus:ring-offset-2 focus:ring-accent-purple shadow-sm border border-transparent rounded-md px-4 py-2 text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-2" data-aos="fade-up" data-aos-delay="300">
-            <i class="ti ti-calculator"></i>
+        <div class="action-buttons flex flex-wrap gap-2 sm:gap-3 justify-center border-t border-gray-200 dark:border-gray-700 pt-4 sm:pt-6 mt-6 sm:mt-8"> <!-- Reduced gap -->
+          <button type="button" onclick="Calculator.calculate()" class="btn bg-accent-purple hover:bg-purple-700 focus:ring-offset-2 focus:ring-accent-purple shadow-sm border border-transparent rounded-md px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-1 sm:gap-2" data-aos="fade-up" data-aos-delay="300">
+            <i class="ti ti-calculator text-base sm:text-lg"></i>
             <span>Calculate</span>
           </button>
-          <button type="button" onclick="Calculator.saveBill()" class="btn bg-accent-green hover:bg-green-600 focus:ring-offset-2 focus:ring-accent-green shadow-sm border border-transparent rounded-md px-4 py-2 text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-2" data-aos="fade-up" data-aos-delay="350">
-            <i class="ti ti-device-floppy"></i>
+          <button type="button" onclick="Calculator.saveBill()" class="btn bg-accent-green hover:bg-green-600 focus:ring-offset-2 focus:ring-accent-green shadow-sm border border-transparent rounded-md px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-1 sm:gap-2" data-aos="fade-up" data-aos-delay="350">
+            <i class="ti ti-device-floppy text-base sm:text-lg"></i>
             <span>Save Bill</span>
           </button>
-          <button type="button" onclick="Calculator.exportToPDF()" class="btn border border-accent-purple text-accent-purple hover:bg-accent-purple/10 dark:hover:bg-accent-purple/20 focus:ring-offset-2 focus:ring-accent-purple shadow-sm rounded-md px-4 py-2 text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-2" data-aos="fade-up" data-aos-delay="400">
-            <i class="ti ti-file-text"></i>
+          <button type="button" onclick="Calculator.exportToPDF()" class="btn border border-accent-purple text-accent-purple hover:bg-accent-purple/10 dark:hover:bg-accent-purple/20 focus:ring-offset-2 focus:ring-accent-purple shadow-sm rounded-md px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-1 sm:gap-2" data-aos="fade-up" data-aos-delay="400">
+            <i class="ti ti-file-text text-base sm:text-lg"></i>
             <span>PDF</span>
           </button>
-          <button type="button" id="templateBtn" class="btn border border-accent-purple text-accent-purple hover:bg-accent-purple/10 dark:hover:bg-accent-purple/20 focus:ring-offset-2 focus:ring-accent-purple shadow-sm rounded-md px-4 py-2 text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-2" data-aos="fade-up" data-aos-delay="450">
-            <i class="ti ti-template"></i>
-            <span>Load Template/Group</span>
+          <button type="button" id="templateBtn" class="btn border border-accent-purple text-accent-purple hover:bg-accent-purple/10 dark:hover:bg-accent-purple/20 focus:ring-offset-2 focus:ring-accent-purple shadow-sm rounded-md px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-1 sm:gap-2" data-aos="fade-up" data-aos-delay="450">
+            <i class="ti ti-template text-base sm:text-lg"></i>
+            <span>Load Template</span> <!-- Shortened text -->
           </button>
-           <button type="button" onclick="UI.openSettings()" class="btn border border-gray-400 text-gray-700 dark:text-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-offset-2 focus:ring-gray-500 shadow-sm rounded-md px-4 py-2 text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-2" data-aos="fade-up" data-aos-delay="500">
-             <i class="ti ti-settings"></i>
+           <button type="button" onclick="UI.openSettings()" class="btn border border-gray-400 text-gray-700 dark:text-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-offset-2 focus:ring-gray-500 shadow-sm rounded-md px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-1 sm:gap-2" data-aos="fade-up" data-aos-delay="500">
+             <i class="ti ti-settings text-base sm:text-lg"></i>
              <span>Settings</span>
            </button>
         </div>
 
         <!-- Results Section -->
-        <div id="results" class="bg-gray-50 dark:bg-gray-800 rounded-xl p-5 space-y-4 text-gray-800 dark:text-white hidden border border-gray-100 dark:border-gray-700 mt-8"></div>
+        <div id="results" class="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 sm:p-5 space-y-3 sm:space-y-4 text-gray-800 dark:text-white hidden border border-gray-100 dark:border-gray-700 mt-6 sm:mt-8"></div>
       </div>
     </div>
   </div>

@@ -318,12 +318,32 @@ class Scan {
      }
 
      /**
+      * Gets the current list of person names from the main UI.
+      * @returns {string[]} An array of person names.
+      */
+     static getCurrentPersonNames() {
+         const personFieldsContainer = document.getElementById('personFields');
+         if (!personFieldsContainer) return [];
+
+         const names = [];
+         const personFields = personFieldsContainer.querySelectorAll('.person-field');
+         personFields.forEach(field => {
+             const nameElement = field.querySelector('.personName h3');
+             if (nameElement) {
+                 names.push(nameElement.textContent.trim());
+             }
+         });
+         return names;
+     }
+
+
+    /**
       * Processes the response from the Gemini API.
-      * Extracts item data and populates the review modal.
+      * Extracts item data and populates the review modal with assignment options.
       * @param {object} responseData The response object from the Gemini API.
       */
      static processGeminiResponse(responseData) {
-         console.log("Processing Gemini response...");
+         console.log("Processing Gemini response for review...");
          const reviewModal = document.getElementById('scanReviewModal');
          const reviewListContainer = document.getElementById('scanReviewListContainer');
          const scannedTotalEl = document.getElementById('scannedTotalAmount');
@@ -375,6 +395,7 @@ class Scan {
              reviewListContainer.innerHTML = ''; // Clear previous items
              let itemsAddedCount = 0;
              let runningTotal = 0;
+             const currentPersonNames = Scan.getCurrentPersonNames(); // Get names for dropdown
 
              if (invoiceData && Array.isArray(invoiceData.lineItems) && invoiceData.lineItems.length > 0) {
                  invoiceData.lineItems.forEach((item, index) => {
@@ -382,33 +403,50 @@ class Scan {
                      // Ensure price is treated as number, handle potential null/string values
                      const price = (item.price === null || item.price === undefined) ? NaN : parseFloat(item.price);
 
+                     // Skip items with invalid or missing prices for assignment? Or assign price 0?
                      if (isNaN(price)) {
                          console.warn(`Invalid or missing price for item: ${description}`, item.price);
-                         // Optionally skip item or use price 0
-                         // return; // Skip item if price is invalid
+                         // Decide whether to skip or default price to 0
+                         // return; // Option 1: Skip this item entirely
+                         // price = 0; // Option 2: Treat price as 0
                      }
 
-                     const priceValue = !isNaN(price) ? price : 0; // Use 0 if price is invalid/missing
+                     const priceValue = !isNaN(price) ? price : 0; // Use 0 if price is invalid/missing for calculation
                      runningTotal += priceValue;
                      itemsAddedCount++;
 
-                     // Create list item element for review
+                     // Create list item element for review with assignment dropdown
                      const li = document.createElement('div');
-                     li.className = 'flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-700 rounded-md text-sm mb-1'; // Added margin-bottom
-                     // Store data attributes for potential later use (e.g., adding to bill)
+                     li.className = 'scan-review-item flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-md mb-2 gap-2'; // Added margin-bottom
+                     // Store data attributes for the assignment logic
                      li.dataset.description = description;
-                     li.dataset.price = priceValue.toFixed(2);
+                     li.dataset.price = priceValue.toFixed(2); // Store precise price
+
+                     // Create dropdown options
+                     let optionsHTML = `<option value="ignore">Ignore</option>`; // Default: Ignore
+                     currentPersonNames.forEach(name => {
+                         optionsHTML += `<option value="${Utils.escapeHTML(name)}">${Utils.escapeHTML(name)}</option>`;
+                     });
+                     optionsHTML += `<option value="additional_fee">Add to Additional Fee</option>`;
+                     // Optionally add Tax option: optionsHTML += `<option value="tax">Set as Tax (%)</option>`;
 
                      li.innerHTML = `
-                         <span class="text-gray-800 dark:text-gray-200 mr-2">${Utils.escapeHTML(description)}</span>
-                         <span class="font-semibold text-gray-900 dark:text-white whitespace-nowrap">${Utils.formatCurrency(priceValue)}</span>
+                         <div class="flex-grow mr-2 mb-2 sm:mb-0">
+                           <span class="block text-sm text-gray-800 dark:text-gray-200">${Utils.escapeHTML(description)}</span>
+                           <span class="block text-xs font-semibold text-gray-600 dark:text-gray-300">${Utils.formatCurrency(priceValue)}</span>
+                         </div>
+                         <div class="w-full sm:w-auto">
+                           <select class="item-assignment-select w-full sm:w-48 px-2 py-1 text-sm border rounded-md dark:bg-dark-input dark:border-gray-600 dark:text-white focus:ring-1 focus:ring-accent-purple focus:border-transparent">
+                             ${optionsHTML}
+                           </select>
+                         </div>
                      `;
                      reviewListContainer.appendChild(li);
                  });
              }
 
              if (itemsAddedCount === 0) {
-                  reviewListContainer.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400 py-4">No line items found on the invoice.</p>';
+                  reviewListContainer.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400 py-4">No assignable line items found on the invoice.</p>';
              }
 
              // Update total amount display (use grandTotal from API if available and valid, otherwise sum of items)
@@ -416,27 +454,32 @@ class Scan {
              const displayTotal = !isNaN(grandTotal) ? grandTotal : runningTotal;
              scannedTotalEl.textContent = Utils.formatCurrency(displayTotal);
 
-             // Store tax if available and valid for later use (e.g. pre-filling tax field)
+             // Store tax if available and valid for potential pre-filling (but don't assign via dropdown for now)
              const tax = (invoiceData.tax === null || invoiceData.tax === undefined) ? NaN : parseFloat(invoiceData.tax);
-             reviewModal.dataset.scannedTax = !isNaN(tax) ? tax.toFixed(2) : 'null'; // Store as string 'null' if invalid/missing
+             const taxInput = document.getElementById('taxInput');
+             if (taxInput && !isNaN(tax)) {
+                 // Convert tax amount to percentage if needed, assuming API gives amount
+                 // This logic might need adjustment based on actual invoice data and requirements
+                 // For now, let's assume tax is an amount and we prefill the % field if possible
+                 // This is complex. Let's just store it for now.
+                 reviewModal.dataset.scannedTax = tax.toFixed(2);
+                 console.log("Scanned tax amount stored:", tax.toFixed(2));
+             } else {
+                 reviewModal.dataset.scannedTax = 'null';
+             }
 
 
-             // --- Show Review Modal ---
-             // Add simple close handlers for now. Proper item assignment would be more complex.
+             // --- Setup Review Modal Buttons ---
              finishReviewBtn.onclick = () => {
-                  reviewModal.classList.add('hidden');
-                  // TODO: Add logic here to potentially transfer reviewed items to the main bill.
-                  // This requires deciding which person gets which item(s).
-                  console.log("Review finished. Items need to be assigned manually or via future UI.");
-                  const taxValue = reviewModal.dataset.scannedTax;
-                  const message = `Review complete. Add items manually.${taxValue !== 'null' ? ` (Detected Tax: ${Utils.formatCurrency(parseFloat(taxValue))})` : ''}`;
-                  UI.showToast(message, "info");
+                 Scan.assignReviewedItems(); // Call the new assignment function
+                 reviewModal.classList.add('hidden');
+                 // UI Toast handled within assignReviewedItems
              };
-              closeReviewBtn.onclick = () => reviewModal.classList.add('hidden');
+             closeReviewBtn.onclick = () => reviewModal.classList.add('hidden');
 
-              reviewModal.classList.remove('hidden'); // Show the review modal
+             reviewModal.classList.remove('hidden'); // Show the review modal
 
-              UI.showToast(`${itemsAddedCount} item(s) extracted. Please review.`, itemsAddedCount > 0 ? "success" : "warning");
+             UI.showToast(`${itemsAddedCount} item(s) extracted. Please assign or ignore.`, itemsAddedCount > 0 ? "success" : "warning");
 
 
          } catch (error) {
@@ -448,6 +491,96 @@ class Scan {
              }
          }
      }
+
+     /**
+      * Processes the assignments made in the review modal and updates the main bill.
+      */
+     static assignReviewedItems() {
+         console.log("Assigning reviewed items...");
+         const reviewListContainer = document.getElementById('scanReviewListContainer');
+         const reviewItems = reviewListContainer.querySelectorAll('.scan-review-item');
+         const additionalFeeInput = document.getElementById('additionalFeeInput');
+         // const taxInput = document.getElementById('taxInput'); // If assigning tax
+
+         if (!additionalFeeInput) {
+             console.error("Additional Fee input not found.");
+             UI.showToast("Error applying assignments.", "error");
+             return;
+         }
+
+         let assignedCount = 0;
+         let feeAdded = 0;
+         let errors = 0;
+
+         reviewItems.forEach(item => {
+             const description = item.dataset.description;
+             const price = parseFloat(item.dataset.price);
+             const selectElement = item.querySelector('.item-assignment-select');
+             const selectedValue = selectElement ? selectElement.value : 'ignore';
+
+             if (isNaN(price)) {
+                 console.warn(`Skipping item "${description}" due to invalid price.`);
+                 return; // Skip items with invalid prices
+             }
+
+             console.log(`Processing assignment for "${description}" (${price}): Target = ${selectedValue}`);
+
+             if (selectedValue === 'ignore') {
+                 // Do nothing
+             } else if (selectedValue === 'additional_fee') {
+                 try {
+                     const currentFee = Utils.parseCurrency(additionalFeeInput.value);
+                     const newFee = currentFee + price;
+                     additionalFeeInput.value = newFee.toFixed(2); // Keep 2 decimal places
+                     feeAdded += price;
+                     assignedCount++;
+                 } catch (e) {
+                     console.error("Error updating additional fee:", e);
+                     errors++;
+                 }
+             } else {
+                 // Assign to a person
+                 const personName = selectedValue;
+                 const success = Person.addScannedItemToPerson(personName, description, price);
+                 if (success) {
+                     assignedCount++;
+                 } else {
+                     errors++;
+                     // Error toast is shown within addScannedItemToPerson
+                 }
+             }
+         });
+
+         console.log(`Finished assigning items. Assigned: ${assignedCount}, Errors: ${errors}, Added to Fee: ${Utils.formatCurrency(feeAdded)}`);
+
+         // Update UI / show summary toast
+         let message = "Assignments complete. ";
+         if (assignedCount > 0) message += `${assignedCount} item(s) assigned. `;
+         if (feeAdded > 0) message += `${Utils.formatCurrency(feeAdded)} added to fees. `;
+         if (errors > 0) message += `${errors} assignment(s) failed.`;
+
+         UI.showToast(message.trim(), errors > 0 ? "warning" : "success");
+
+         // Optionally prefill tax from stored value?
+         const reviewModal = document.getElementById('scanReviewModal');
+         const storedTax = reviewModal?.dataset.scannedTax;
+         const taxInput = document.getElementById('taxInput');
+         if(taxInput && storedTax && storedTax !== 'null' && !taxInput.value) {
+              // This is tricky - API gives tax AMOUNT, input expects PERCENTAGE.
+              // We need the subtotal BEFORE tax to calculate the percentage accurately.
+              // For now, maybe just log it or show in a separate message.
+              console.warn(`Scanned tax amount was ${Utils.formatCurrency(parseFloat(storedTax))}. Manual entry required for percentage.`);
+              // Or potentially add it as an additional fee if that makes sense?
+              // UI.showToast(`Note: Scanned tax amount was ${Utils.formatCurrency(parseFloat(storedTax))}. Please enter tax % manually.`, "info");
+         }
+
+
+         // Trigger calculation if auto-calculate is on
+         if (document.getElementById('autoCalculate')?.checked) {
+             Calculator.calculate();
+         }
+     }
+
 
 } // ========= End of Scan Class =========
 
