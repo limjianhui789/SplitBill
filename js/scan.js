@@ -1,8 +1,13 @@
 // js/scan.js - Handles invoice scanning functionality
 
+// Global variable to store the last image blob for re-scanning
+// This ensures it persists even if the class property is cleared
+let globalLastImageBlob = null;
+
 class Scan {
     static currentStream = null; // Store the current stream to close it later
     static isInitiating = false; // Flag to prevent concurrent initiations
+    static lastImageBlob = null; // Store the last captured/uploaded image for re-scanning
 
     /**
      * Initiates the invoice scanning process.
@@ -145,13 +150,15 @@ class Scan {
     /**
      * Stops the camera stream tracks and hides the modal.
      * @param {boolean} hideModal - Whether to hide the modal (default: true).
+     * @param {boolean} preserveImageBlob - Whether to preserve the lastImageBlob (default: false).
      */
-    static closeCameraStream(hideModal = true) {
+    static closeCameraStream(hideModal = true, preserveImageBlob = false) {
         const scanModal = document.getElementById('scanModal');
         const videoElement = document.getElementById('cameraFeed');
         const loadingOverlay = document.getElementById('scanLoadingOverlay');
 
-        console.log("Attempting to close camera stream...");
+        console.log(`Attempting to close camera stream... hideModal=${hideModal}, preserveImageBlob=${preserveImageBlob}`);
+        console.log(`Current lastImageBlob: ${Scan.lastImageBlob ? `Size: ${Scan.lastImageBlob.size} bytes, type: ${Scan.lastImageBlob.type}` : 'No image blob'}`);
 
         if (Scan.currentStream) {
             Scan.currentStream.getTracks().forEach(track => {
@@ -187,7 +194,18 @@ class Scan {
 
          // Reset the initiation flag if the stream is closed.
          Scan.isInitiating = false;
-         console.log("Scan initiation flag reset.");
+
+         // Clear the last image blob when closing the scan modal, unless preserveImageBlob is true
+         if (!preserveImageBlob) {
+             console.log("Clearing lastImageBlob...");
+             Scan.lastImageBlob = null;
+             // Note: We intentionally don't clear globalLastImageBlob here
+             // This ensures we always have a copy for re-scanning
+             console.log("Scan initiation flag reset and class lastImageBlob cleared. Global copy preserved.");
+         } else {
+             console.log("Preserving lastImageBlob for re-scanning:", Scan.lastImageBlob ? `Size: ${Scan.lastImageBlob.size} bytes` : 'No image blob');
+             console.log("Scan initiation flag reset. Last image preserved for re-scanning.");
+         }
     }
 
 
@@ -231,6 +249,10 @@ class Scan {
             canvas.toBlob(blob => {
                 if (blob) {
                     console.log(`Image captured as Blob, size: ${blob.size} bytes, type: ${blob.type}`);
+                    // Store the blob for potential re-scanning in both class property and global variable
+                    Scan.lastImageBlob = blob;
+                    globalLastImageBlob = blob; // Store in global variable as well
+                    console.log(`Image captured and stored for re-scanning. Blob size: ${blob.size} bytes, type: ${blob.type}`);
                     // Send this blob to the Gemini API
                     // We intentionally don't close the stream here, sendToGeminiAPI will handle it
                     Scan.sendToGeminiAPI(blob) // Handles hiding overlay on completion/error
@@ -250,10 +272,11 @@ class Scan {
      /**
       * Sends the captured image data to the Gemini API.
       * @param {Blob} imageBlob The captured image data as a Blob.
+      * @param {boolean} isRescanning Whether this is a re-scan operation (default: false).
       * @returns {Promise<void>} A promise that resolves when the API call is complete.
       */
-     static sendToGeminiAPI(imageBlob) {
-         console.log("Sending image to Gemini API...");
+     static sendToGeminiAPI(imageBlob, isRescanning = false) {
+         console.log(`Sending image to Gemini API... ${isRescanning ? '(RE-SCANNING)' : '(INITIAL SCAN)'} - Blob size: ${imageBlob.size} bytes, type: ${imageBlob.type}`);
          // Note: Loading overlay is already shown by captureImage or uploadImage
          const loadingOverlay = document.getElementById('scanLoadingOverlay');
 
@@ -311,8 +334,14 @@ class Scan {
                       // Regardless of ok status, hide loading and close camera stream now
                       // Do this *after* getting response but before processing it.
                       if (loadingOverlay) loadingOverlay.classList.add('hidden');
-                      Scan.closeCameraStream();
-                      console.log("Stream closed and loading hidden after API response received.");
+
+                      // Always preserve the lastImageBlob for potential re-scanning
+                      // This is the key fix - we always want to preserve the image blob after scanning
+                      // Close camera stream but preserve the image blob
+                      Scan.closeCameraStream(true, true); // hideModal=true, preserveImageBlob=true
+                      console.log(isRescanning ?
+                          "Scan modal hidden after re-scan response received. Image blob preserved." :
+                          "Stream closed and loading hidden after API response received. Image blob preserved for potential re-scanning.");
 
 
                      if (!response.ok) {
@@ -345,7 +374,11 @@ class Scan {
                       UI.showToast(`Failed to process invoice: ${error.message}`, "error");
                       // Ensure loading is hidden and stream closed on error (redundant check, but safe)
                       if (loadingOverlay && !loadingOverlay.classList.contains('hidden')) loadingOverlay.classList.add('hidden');
-                      if (Scan.currentStream) Scan.closeCameraStream(); // Ensure closure if error happened before response handling
+
+                      // Always preserve the lastImageBlob for potential re-scanning, even on error
+                      // Close camera stream but preserve the image blob
+                      Scan.closeCameraStream(true, true); // hideModal=true, preserveImageBlob=true
+                      console.log("Error occurred, but image blob preserved for potential re-scanning.");
                       reject(error); // Reject the promise with the error
                  }
              };
@@ -353,7 +386,12 @@ class Scan {
                  console.error("Error converting Blob to Base64:", error);
                  UI.showToast("Failed to prepare image for scanning.", "error");
                  if (loadingOverlay) loadingOverlay.classList.add('hidden');
-                 Scan.closeCameraStream();
+
+                 // Always preserve the lastImageBlob for potential re-scanning, even on error
+                 // Close camera stream but preserve the image blob
+                 Scan.closeCameraStream(true, true); // hideModal=true, preserveImageBlob=true
+                 console.log("FileReader error occurred, but image blob preserved for potential re-scanning.");
+
                  reject(new Error("Failed to prepare image for scanning")); // Reject the promise with the error
              };
          });
@@ -517,6 +555,43 @@ class Scan {
                  // UI Toast handled within assignReviewedItems
              };
              closeReviewBtn.onclick = () => reviewModal.classList.add('hidden');
+
+             // Setup re-scan button
+             const rescanBtn = document.getElementById('rescanBtn');
+             console.log('Setting up re-scan button:', rescanBtn ? 'Button found' : 'Button NOT found',
+                'lastImageBlob:', Scan.lastImageBlob ? `Size: ${Scan.lastImageBlob.size} bytes` : 'No image blob',
+                'globalLastImageBlob:', globalLastImageBlob ? `Size: ${globalLastImageBlob.size} bytes` : 'No global image blob');
+
+             // Use the global variable as a fallback if the class property is null
+             if (!Scan.lastImageBlob && globalLastImageBlob) {
+                 console.log("Class lastImageBlob is null, but globalLastImageBlob is available. Using global copy for button setup.");
+                 Scan.lastImageBlob = globalLastImageBlob;
+             }
+
+             if (rescanBtn) {
+                 // Only enable the re-scan button if we have a stored image
+                 if (Scan.lastImageBlob) {
+                     console.log('Enabling re-scan button');
+                     rescanBtn.disabled = false;
+                     rescanBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+                     // Remove any existing event listeners by cloning and replacing the button
+                     const newRescanBtn = rescanBtn.cloneNode(true);
+                     rescanBtn.parentNode.replaceChild(newRescanBtn, rescanBtn);
+
+                     // Add a single click handler to the new button
+                     newRescanBtn.onclick = function() {
+                         console.log('Re-scan button clicked');
+                         Scan.rescanImage();
+                     };
+
+                     console.log('Re-scan button event handlers attached');
+                 } else {
+                     console.log('Disabling re-scan button - no image blob available');
+                     rescanBtn.disabled = true;
+                     rescanBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                 }
+             }
 
              reviewModal.classList.remove('hidden'); // Show the review modal
 
@@ -689,6 +764,10 @@ class Scan {
             const blob = await Scan.fileToBlob(file);
             if (blob) {
                 console.log(`Uploaded image processed as Blob, size: ${blob.size} bytes, type: ${blob.type}`);
+                // Store the blob for potential re-scanning in both class property and global variable
+                Scan.lastImageBlob = blob;
+                globalLastImageBlob = blob; // Store in global variable as well
+                console.log(`Uploaded image stored for re-scanning. Blob size: ${blob.size} bytes, type: ${blob.type}`);
                 // Send the blob to the Gemini API using the existing method
                 Scan.sendToGeminiAPI(blob);
             } else {
@@ -836,7 +915,98 @@ class Scan {
         // Use the existing method to display the results
         Scan.processGeminiResponse(mockResponse);
     }
+
+    /**
+     * Re-scans the last captured or uploaded image.
+     * This allows users to try again if the AI didn't recognize items correctly.
+     */
+    static rescanImage() {
+        console.log("===== RESCAN INITIATED =====");
+
+        // Use the global variable as a fallback if the class property is null
+        if (!Scan.lastImageBlob && globalLastImageBlob) {
+            console.log("Class lastImageBlob is null, but globalLastImageBlob is available. Using global copy.");
+            Scan.lastImageBlob = globalLastImageBlob;
+        }
+
+        console.log("Re-scanning last image...", Scan.lastImageBlob ? `Image blob size: ${Scan.lastImageBlob.size} bytes, type: ${Scan.lastImageBlob.type}` : "No image blob available");
+
+        // Debug: Check if this method is accessible
+        console.log("rescanImage method called successfully");
+
+        if (!Scan.lastImageBlob) {
+            console.error("No image available for re-scanning.");
+            UI.showToast("No image available for re-scanning.", "error");
+            return;
+        }
+
+        // Hide the review modal
+        const reviewModal = document.getElementById('scanReviewModal');
+        if (reviewModal) {
+            reviewModal.classList.add('hidden');
+        }
+
+        // Show the scan modal with loading overlay
+        const scanModal = document.getElementById('scanModal');
+        const loadingOverlay = document.getElementById('scanLoadingOverlay');
+
+        if (scanModal) {
+            scanModal.classList.remove('hidden');
+        }
+
+        if (loadingOverlay) {
+            loadingOverlay.classList.remove('hidden');
+        }
+
+        UI.showToast("Re-scanning image...", "info");
+
+        try {
+            // Re-send the image to the Gemini API with the isRescanning flag set to true
+            Scan.sendToGeminiAPI(Scan.lastImageBlob, true)
+                .catch(error => {
+                    console.error("Error during re-scan:", error);
+                    UI.showToast(`Re-scan failed: ${error.message}`, "error");
+                    // Note: The sendToGeminiAPI method will handle hiding the loading overlay and modal
+                });
+        } catch (error) {
+            console.error("Unexpected error initiating re-scan:", error);
+            UI.showToast(`Re-scan failed: ${error.message}`, "error");
+
+            // Ensure UI is cleaned up
+            if (loadingOverlay) {
+                loadingOverlay.classList.add('hidden');
+            }
+
+            // Close camera stream but preserve the image blob for potential retry
+            Scan.closeCameraStream(true, true); // hideModal=true, preserveImageBlob=true
+        }
+    }
+    /**
+     * Test function to verify re-scan functionality.
+     * This can be called directly from the browser console: Scan.testRescan()
+     */
+    static testRescan() {
+        console.log("===== TEST RESCAN FUNCTION CALLED =====");
+
+        // Use the global variable as a fallback if the class property is null
+        if (!Scan.lastImageBlob && globalLastImageBlob) {
+            console.log("Class lastImageBlob is null, but globalLastImageBlob is available. Using global copy for test.");
+            Scan.lastImageBlob = globalLastImageBlob;
+        }
+
+        if (Scan.lastImageBlob) {
+            console.log(`Last image blob exists: Size: ${Scan.lastImageBlob.size} bytes, type: ${Scan.lastImageBlob.type}`);
+            Scan.rescanImage();
+        } else {
+            console.error("No image blob available for re-scanning test");
+            alert("No image blob available for re-scanning test. Please capture or upload an image first.");
+        }
+    }
 } // ========= End of Scan Class =========
 
 // Note: Event listener setup for the main scan button is handled in ui.js
+// Add a global function for testing re-scan from the console
+window.testRescan = function() {
+    Scan.testRescan();
+};
 // The check in ui.js ensures `Scan.initiateScan()` is called correctly.

@@ -398,14 +398,14 @@
         if (!container) {
             container = document.createElement('div');
             container.id = 'toastContainer';
-            // Position fixed, bottom-right, above potential bottom nav, with spacing
-            container.className = 'fixed bottom-24 md:bottom-5 right-5 z-[10000] space-y-2 w-auto max-w-xs';
+            // Position fixed, top-center, with spacing and responsive width
+            container.className = 'fixed top-5 left-1/2 transform -translate-x-1/2 z-[10000] space-y-2 w-[80%] sm:w-[60%] md:w-[50%] max-w-md';
             document.body.appendChild(container);
         }
 
         const toast = document.createElement('div');
         // Base classes using Tailwind for styling
-        let baseClasses = 'p-4 rounded-lg shadow-lg flex items-center text-sm transition-all duration-300 ease-in-out transform opacity-0 translate-y-2 w-full';
+        let baseClasses = 'p-4 rounded-lg shadow-lg flex items-center text-sm transition-all duration-300 ease-in-out transform opacity-0 -translate-y-2 w-full mx-auto';
         let typeClasses = '';
         let iconClass = '';
 
@@ -450,7 +450,7 @@
 
         // Animate in
         requestAnimationFrame(() => {
-            toast.classList.remove('opacity-0', 'translate-y-2');
+            toast.classList.remove('opacity-0', '-translate-y-2');
             toast.classList.add('opacity-100', 'translate-y-0');
         });
 
@@ -464,7 +464,7 @@
          if (!toastElement || !toastElement.parentElement) return; // Already removed
 
          toastElement.classList.remove('opacity-100', 'translate-y-0');
-         toastElement.classList.add('opacity-0', 'translate-y-2'); // Or use another exit animation
+         toastElement.classList.add('opacity-0', '-translate-y-2'); // Animate up when dismissing
 
          // Remove from DOM after transition
          setTimeout(() => {

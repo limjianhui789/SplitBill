@@ -96,7 +96,7 @@
 
         <!-- Illustration Section -->
         <div class="my-4 sm:my-6 text-center" data-aos="fade-up" data-aos-delay="180">
-          <img src="https://images.undraw.co/undraw_receipt_re_fre3.svg" alt="Bill splitting illustration" class="mx-auto h-40 sm:h-56 w-auto text-accent-purple dark:text-accent-purple">
+          <img src="./images/Banner.png" style="border-radius: 10px;" alt="Bill splitting illustration" class="mx-auto h-40 sm:h-56 w-auto text-accent-purple dark:text-accent-purple">
         </div>
 
         <!-- Restaurant and Location Section -->
@@ -489,7 +489,10 @@
             <p class="text-sm text-gray-600 dark:text-gray-400">Scanned Total (for reference): <span id="scannedTotalAmount" class="font-semibold">N/A</span></p>
         </div>
 
-        <div class="flex justify-end pt-4">
+        <div class="flex justify-between pt-4">
+          <button id="rescanBtn" class="btn bg-accent-blue text-white hover:bg-blue-700 focus:ring-offset-2 focus:ring-accent-blue shadow-sm border border-transparent rounded-md px-3 py-2 text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-2">
+            <i class="ti ti-refresh"></i> Re-scan
+          </button>
           <button id="finishReviewBtn" class="btn btn-secondary">Done Reviewing</button>
         </div>
       </div>
@@ -498,7 +501,7 @@
 
 
   <!-- Toast Notification Container -->
-  <div id="toastContainer" class="fixed bottom-5 right-5 md:bottom-8 md:right-8 z-[60] space-y-3 w-auto max-w-xs"></div>
+  <div id="toastContainer" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-[60] space-y-3 w-[80%] sm:w-[60%] md:w-[50%] max-w-md"></div>
 
   <!-- Initialize theme and AOS -->
   <script>

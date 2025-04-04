@@ -371,9 +371,25 @@ input:focus, textarea:focus, select:focus {
 /* Toast notifications */
 #toastContainer {
   position: fixed;
-  bottom: 80px !important; /* Adjusted for floating nav */
-  right: 20px;
+  top: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
   z-index: 10001;
+  width: 80% !important; /* Mobile width */
+  max-width: 500px !important;
+}
+
+/* Responsive toast width */
+@media (min-width: 640px) {
+  #toastContainer {
+    width: 60% !important; /* Tablet width */
+  }
+}
+
+@media (min-width: 768px) {
+  #toastContainer {
+    width: 50% !important; /* Desktop width */
+  }
 }
 
 .toast {
@@ -382,9 +398,10 @@ input:focus, textarea:focus, select:focus {
   margin-bottom: 8px;
   display: flex;
   align-items: center;
-  max-width: 300px; /* Max width on mobile */
+  width: 100%; /* Full width of container */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  /* Animations are in animations.css */
+  transition: all 0.3s ease-in-out;
+  transform-origin: top center;
 }
 
 /* Modal styles */
