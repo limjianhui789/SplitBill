@@ -124,23 +124,28 @@
         <!-- Person List Section -->
         <div id="personFields" class="space-y-5 sm:space-y-6">
           <div class="person-field bg-white dark:bg-dark-card p-4 sm:p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-transform space-y-3 sm:space-y-4" data-aos="fade-up" data-aos-delay="250">
-            <div class="relative">
-              <div
-                class="personName text-base sm:text-lg font-heading font-semibold text-center mb-2 sm:mb-3 text-gray-700 dark:text-white cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded dropdown-toggle leading-snug">
-                <h3 contenteditable="true" class="outline-none">Person 1</h3>
-              </div>
-              <div
-                class="name-dropdown hidden absolute z-10 w-full mt-1 bg-white dark:bg-dark-card rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
-                <div class="p-3 space-y-2">
-                  <input type="text" class="new-name-input w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white text-sm sm:text-base"
-                    placeholder="Add new name">
-                  <div class="flex gap-2">
-                    <button class="add-name-btn btn flex-1 bg-accent-green text-white hover:bg-green-600 focus:ring-offset-2 focus:ring-accent-green shadow-sm border border-transparent rounded-md px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-1 sm:gap-2">Save Name</button>
-                    <button class="add-temp-name-btn btn flex-1 border border-accent-purple text-accent-purple hover:bg-accent-purple/10 dark:hover:bg-accent-purple/20 focus:ring-offset-2 focus:ring-accent-purple shadow-sm rounded-md px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-1 sm:gap-2">Use Once</button>
-                  </div>
+            <div class="flex justify-between items-start mb-2">
+              <div class="relative flex-grow">
+                <div
+                  class="personName text-base sm:text-lg font-heading font-semibold text-center mb-2 sm:mb-3 text-gray-700 dark:text-white cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded dropdown-toggle leading-snug">
+                  <h3 contenteditable="true" class="outline-none">Person 1</h3>
                 </div>
-                <div class="saved-names-list max-h-40 overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700"></div>
+                <div
+                  class="name-dropdown hidden absolute z-10 w-full mt-1 bg-white dark:bg-dark-card rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
+                  <div class="p-3 space-y-2">
+                    <input type="text" class="new-name-input w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white text-sm sm:text-base"
+                      placeholder="Add new name">
+                    <div class="flex gap-2">
+                      <button class="add-name-btn btn flex-1 bg-accent-green text-white hover:bg-green-600 focus:ring-offset-2 focus:ring-accent-green shadow-sm border border-transparent rounded-md px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-1 sm:gap-2">Save Name</button>
+                      <button class="add-temp-name-btn btn flex-1 border border-accent-purple text-accent-purple hover:bg-accent-purple/10 dark:hover:bg-accent-purple/20 focus:ring-offset-2 focus:ring-accent-purple shadow-sm rounded-md px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-1 sm:gap-2">Use Once</button>
+                    </div>
+                  </div>
+                  <div class="saved-names-list max-h-40 overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700"></div>
+                </div>
               </div>
+              <button type="button" onclick="Person.removePersonField(this)" class="remove-person-btn p-1.5 sm:p-2 rounded-full text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 ease-in-out">
+                <i class="ti ti-trash text-lg sm:text-xl"></i>
+              </button>
             </div>
             <ul class="person-food-list space-y-2 sm:space-y-3">
               <li class="food-item-row flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">

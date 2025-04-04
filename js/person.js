@@ -19,9 +19,57 @@ class Person {
 
         if (!lastPersonField) {
             console.error("Could not find the last person field to clone.");
-            UI.showToast("Error adding person field template.", "error");
-            // As a fallback, maybe load a predefined template? For now, just error out.
-            return;
+
+            // Create a new person field from scratch as a fallback
+            const newPersonField = document.createElement('div');
+            newPersonField.className = 'person-field bg-white dark:bg-dark-card p-4 sm:p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 transition-transform space-y-3 sm:space-y-4';
+            newPersonField.innerHTML = `
+                <div class="flex justify-between items-start mb-2">
+                    <div class="relative flex-grow">
+                        <div class="personName text-base sm:text-lg font-heading font-semibold text-center mb-2 sm:mb-3 text-gray-700 dark:text-white cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded dropdown-toggle leading-snug">
+                            <h3 contenteditable="true" class="outline-none">Person 1</h3>
+                        </div>
+                        <div class="name-dropdown hidden absolute z-10 w-full mt-1 bg-white dark:bg-dark-card rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
+                            <div class="p-3 space-y-2">
+                                <input type="text" class="new-name-input w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white text-sm sm:text-base" placeholder="Add new name">
+                                <div class="flex gap-2">
+                                    <button class="add-name-btn btn flex-1 bg-accent-green text-white hover:bg-green-600 focus:ring-offset-2 focus:ring-accent-green shadow-sm border border-transparent rounded-md px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-1 sm:gap-2">Save Name</button>
+                                    <button class="add-temp-name-btn btn flex-1 border border-accent-purple text-accent-purple hover:bg-accent-purple/10 dark:hover:bg-accent-purple/20 focus:ring-offset-2 focus:ring-accent-purple shadow-sm rounded-md px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium inline-flex items-center justify-center transition-colors duration-200 ease-in-out gap-1 sm:gap-2">Use Once</button>
+                                </div>
+                            </div>
+                            <div class="saved-names-list max-h-40 overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700"></div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="Person.removePersonField(this)" class="remove-person-btn p-1.5 sm:p-2 rounded-full text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 ease-in-out">
+                        <i class="ti ti-trash text-lg sm:text-xl"></i>
+                    </button>
+                </div>
+                <ul class="person-food-list space-y-2 sm:space-y-3">
+                    <li class="food-item-row flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+                        <input type="text" class="food-item-name flex-grow px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-purple focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500 text-sm sm:text-base" placeholder="Item Name">
+                        <input type="text" class="food-price w-full sm:w-28 px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-accent-purple focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500 text-sm sm:text-base" placeholder="Price" inputmode="decimal" oninput="Utils.handleCalculatorInput(this)">
+                        <!-- Button Wrapper -->
+                        <div class="flex items-center justify-center sm:justify-start gap-1 sm:gap-2">
+                            <button type="button" onclick="Person.removeFoodItem(this)" class="remove-food-btn p-1.5 sm:p-2 rounded-full text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 ease-in-out" style="display: none;">
+                                <i class="ti ti-minus text-lg sm:text-xl"></i>
+                            </button>
+                            <button type="button" onclick="Person.addFoodItem(this)" class="add-food-btn p-1.5 sm:p-2 rounded-full text-accent-blue hover:text-blue-700 dark:text-accent-blue dark:hover:text-blue-400 hover:bg-blue-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-blue transition-colors duration-200 ease-in-out">
+                                <i class="ti ti-plus text-lg sm:text-xl"></i>
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+            `;
+            personFieldsContainer.appendChild(newPersonField);
+
+            // Set up the name dropdown for the new field
+            const personNameInput = newPersonField.querySelector('.personName');
+            if (personNameInput) {
+                Person.createNameDropdown(personNameInput);
+            }
+
+            UI.showToast("Created new person field template.", "info");
+            return newPersonField;
         }
 
         const newPersonField = lastPersonField.cloneNode(true);
@@ -89,7 +137,10 @@ class Person {
         });
 
         // Add event listener for the name dropdown toggle
-        UI.setupNameDropdown(newPersonField);
+        const personNameInput = newPersonField.querySelector('.personName');
+        if (personNameInput) {
+            Person.createNameDropdown(personNameInput);
+        }
 
         UI.showToast(`Person ${existingFields.length + 1} added`, "success");
         console.log("New person field added successfully.");
@@ -99,6 +150,9 @@ class Person {
 
         // Update person numbers if necessary (though 'Person X' is handled above)
         // Person.updatePersonNumbers(); // Only needed if names aren't dynamic
+
+        // Return the new person field for chaining or reference
+        return newPersonField;
     }
 
     /**
@@ -430,4 +484,91 @@ class Person {
         return true;
     }
 
+    /**
+     * Creates and sets up a name dropdown for a person field.
+     * @param {HTMLElement} personNameElement - The person name element to attach the dropdown to.
+     */
+    static createNameDropdown(personNameElement) {
+        if (!personNameElement) {
+            console.error("Cannot create name dropdown: personNameElement is null or undefined.");
+            return;
+        }
+
+        // Check if dropdown already exists
+        const personField = personNameElement.closest('.person-field');
+        if (!personField) {
+            console.error("Cannot create name dropdown: parent person-field not found.");
+            return;
+        }
+
+        // Check if dropdown already exists
+        let dropdown = personField.querySelector('.name-dropdown');
+
+        // If dropdown already exists, just return
+        if (dropdown) {
+            console.log("Name dropdown already exists for this person field.");
+            return;
+        }
+
+        // Create the dropdown
+        dropdown = document.createElement('div');
+        dropdown.className = 'name-dropdown hidden bg-white dark:bg-gray-700 rounded-lg shadow-lg';
+
+        // Add common names as options
+        const commonNames = [
+            'Alice', 'Bob', 'Charlie', 'David', 'Emma', 'Frank', 'Grace', 'Henry',
+            'Isabella', 'Jack', 'Kate', 'Liam', 'Mia', 'Noah', 'Olivia', 'Peter'
+        ];
+
+        // Create dropdown content
+        commonNames.forEach(name => {
+            const option = document.createElement('div');
+            option.className = 'px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer';
+            option.textContent = name;
+            option.addEventListener('click', () => {
+                const nameHeader = personField.querySelector('.personName h3');
+                if (nameHeader) {
+                    nameHeader.textContent = name;
+                    dropdown.classList.add('hidden');
+                }
+            });
+            dropdown.appendChild(option);
+        });
+
+        // Add the dropdown to the person field
+        personField.appendChild(dropdown);
+
+        // Add click event to the person name to toggle dropdown
+        personNameElement.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent document click from immediately closing it
+
+            // Close all other dropdowns first
+            document.querySelectorAll('.name-dropdown:not(.hidden)').forEach(otherDropdown => {
+                if (otherDropdown !== dropdown) {
+                    otherDropdown.classList.add('hidden');
+                }
+            });
+
+            // Toggle this dropdown
+            dropdown.classList.toggle('hidden');
+
+            // Position the dropdown correctly
+            if (!dropdown.classList.contains('hidden')) {
+                dropdown.style.position = 'absolute';
+                dropdown.style.top = `${personNameElement.offsetTop + personNameElement.offsetHeight}px`;
+                dropdown.style.left = `${personNameElement.offsetLeft}px`;
+                dropdown.style.width = `${personNameElement.offsetWidth}px`;
+                dropdown.style.zIndex = '1000';
+
+                // Check if dropdown goes off-screen and adjust if needed
+                const dropdownRect = dropdown.getBoundingClientRect();
+                if (dropdownRect.bottom > window.innerHeight) {
+                    dropdown.style.top = `${personNameElement.offsetTop - dropdownRect.height}px`;
+                }
+            }
+        });
+
+        // Mark as initialized
+        personNameElement.dataset.dropdownInitialized = 'true';
+    }
 }
