@@ -26,6 +26,7 @@ interface PersonModule {
 interface ScanModule {
   initiateScan(): void;
   captureImage(): Promise<void>;
+  uploadImage(file: File): Promise<void>;
   processImage(imageData: Blob): Promise<ScanResult>;
   displayResults(results: ScanResult): void;
 }

@@ -194,155 +194,169 @@ class Scan {
     /**
      * Captures an image from the video stream.
      * @param {HTMLVideoElement} videoElement The video element showing the stream.
+     * @returns {Promise<void>} A promise that resolves when the image is captured and processed.
      */
     static captureImage(videoElement) {
         console.log("Capturing image...");
-        const loadingOverlay = document.getElementById('scanLoadingOverlay');
+        return new Promise((resolve, reject) => {
+            const loadingOverlay = document.getElementById('scanLoadingOverlay');
 
-        if (!videoElement.srcObject || !videoElement.videoWidth || !videoElement.videoHeight || videoElement.readyState < videoElement.HAVE_CURRENT_DATA) {
-            console.error("Video dimensions are zero or video not ready, cannot capture.", {
-                width: videoElement.videoWidth,
-                height: videoElement.videoHeight,
-                readyState: videoElement.readyState,
-                srcObject: !!videoElement.srcObject
-            });
-            UI.showToast("Error capturing image: Camera feed not ready.", "error");
-             if (loadingOverlay) loadingOverlay.classList.add('hidden'); // Hide loading on error
-            return;
-        }
-
-         if (loadingOverlay) {
-            loadingOverlay.classList.remove('hidden'); // Show loading spinner
-         }
-
-        const canvas = document.createElement('canvas');
-        // Set canvas dimensions based on video feed dimensions for best quality
-        canvas.width = videoElement.videoWidth;
-        canvas.height = videoElement.videoHeight;
-
-        const context = canvas.getContext('2d');
-        // Draw the current video frame onto the canvas
-        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-        // Get the image data from the canvas as a Blob
-         canvas.toBlob(blob => {
-            if (blob) {
-                console.log(`Image captured as Blob, size: ${blob.size} bytes, type: ${blob.type}`);
-                // Send this blob to the Gemini API
-                // We intentionally don't close the stream here, sendToGeminiAPI will handle it
-                Scan.sendToGeminiAPI(blob); // Handles hiding overlay on completion/error
-            } else {
-                console.error("Failed to create Blob from canvas.");
-                 UI.showToast("Failed to capture image data.", "error");
-                 if (loadingOverlay) loadingOverlay.classList.add('hidden'); // Hide loading on error
-                 Scan.closeCameraStream(); // Close stream if capture fails to create blob
+            if (!videoElement.srcObject || !videoElement.videoWidth || !videoElement.videoHeight || videoElement.readyState < videoElement.HAVE_CURRENT_DATA) {
+                console.error("Video dimensions are zero or video not ready, cannot capture.", {
+                    width: videoElement.videoWidth,
+                    height: videoElement.videoHeight,
+                    readyState: videoElement.readyState,
+                    srcObject: !!videoElement.srcObject
+                });
+                UI.showToast("Error capturing image: Camera feed not ready.", "error");
+                if (loadingOverlay) loadingOverlay.classList.add('hidden'); // Hide loading on error
+                reject(new Error("Camera feed not ready"));
+                return;
             }
-         }, 'image/jpeg', 0.9); // Use JPEG for potentially smaller size, quality 0.9
+
+            if (loadingOverlay) {
+                loadingOverlay.classList.remove('hidden'); // Show loading spinner
+            }
+
+            const canvas = document.createElement('canvas');
+            // Set canvas dimensions based on video feed dimensions for best quality
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+
+            const context = canvas.getContext('2d');
+            // Draw the current video frame onto the canvas
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+            // Get the image data from the canvas as a Blob
+            canvas.toBlob(blob => {
+                if (blob) {
+                    console.log(`Image captured as Blob, size: ${blob.size} bytes, type: ${blob.type}`);
+                    // Send this blob to the Gemini API
+                    // We intentionally don't close the stream here, sendToGeminiAPI will handle it
+                    Scan.sendToGeminiAPI(blob) // Handles hiding overlay on completion/error
+                        .then(() => resolve())
+                        .catch(error => reject(error));
+                } else {
+                    console.error("Failed to create Blob from canvas.");
+                    UI.showToast("Failed to capture image data.", "error");
+                    if (loadingOverlay) loadingOverlay.classList.add('hidden'); // Hide loading on error
+                    Scan.closeCameraStream(); // Close stream if capture fails to create blob
+                    reject(new Error("Failed to create image data"));
+                }
+            }, 'image/jpeg', 0.9); // Use JPEG for potentially smaller size, quality 0.9
+        });
     }
 
      /**
       * Sends the captured image data to the Gemini API.
       * @param {Blob} imageBlob The captured image data as a Blob.
+      * @returns {Promise<void>} A promise that resolves when the API call is complete.
       */
-     static async sendToGeminiAPI(imageBlob) {
+     static sendToGeminiAPI(imageBlob) {
          console.log("Sending image to Gemini API...");
-         // Note: Loading overlay is already shown by captureImage
+         // Note: Loading overlay is already shown by captureImage or uploadImage
          const loadingOverlay = document.getElementById('scanLoadingOverlay');
 
-         // --- Placeholder for actual API call ---
-         // IMPORTANT: Replace "YOUR_GEMINI_API_KEY" with a secure method
-         // of retrieving your API key (e.g., from a config file, backend proxy).
-         const apiKey = "AIzaSyAa0qV2hBkflFh0rSg2jmUQTL_W6bJcEc0"; // <<< REPLACE THIS >>>
-         const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"; // Updated model
+         return new Promise((resolve, reject) => {
+             // --- Placeholder for actual API call ---
+             // IMPORTANT: Replace "YOUR_GEMINI_API_KEY" with a secure method
+             // of retrieving your API key (e.g., from a config file, backend proxy).
+             const apiKey = "AIzaSyAa0qV2hBkflFh0rSg2jmUQTL_W6bJcEc0"; // <<< REPLACE THIS >>>
+             const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"; // Updated model
 
-         if (apiKey === "YOUR_GEMINI_API_KEY" || !apiKey) {
-             console.error("Gemini API Key not configured.");
-             UI.showToast("Scan feature not configured. API key missing.", "error");
-             if (loadingOverlay) loadingOverlay.classList.add('hidden');
-             Scan.closeCameraStream(); // Close the camera if API key is missing
-             return;
-         }
+             if (apiKey === "YOUR_GEMINI_API_KEY" || !apiKey) {
+                 console.error("Gemini API Key not configured.");
+                 UI.showToast("Scan feature not configured. API key missing.", "error");
+                 if (loadingOverlay) loadingOverlay.classList.add('hidden');
+                 Scan.closeCameraStream(); // Close the camera if API key is missing
+                 reject(new Error("API key not configured"));
+                 return;
+             }
 
-         // Convert Blob to Base64 for JSON payload
-         const reader = new FileReader();
-         reader.readAsDataURL(imageBlob);
-         reader.onloadend = async () => {
-             const base64Data = reader.result.split(',')[1]; // Remove the "data:image/jpeg;base64," prefix
+             // Convert Blob to Base64 for JSON payload
+             const reader = new FileReader();
+             reader.readAsDataURL(imageBlob);
+             reader.onloadend = async () => {
+                 const base64Data = reader.result.split(',')[1]; // Remove the "data:image/jpeg;base64," prefix
 
-             const requestBody = {
-                 contents: [{
-                     parts: [{
-                         // Updated prompt for better structure and clarity
-                         text: `Analyze this invoice image. Extract line items, including description and total price for each item. Also extract the overall tax amount and the final grand total. Structure the output as a JSON object with keys: "lineItems" (an array of objects, each with "description" and "price" as a number), "tax" (a number), and "grandTotal" (a number). If a value isn't found, represent it as null. Example: { "lineItems": [{"description": "Burger", "price": 12.50}, {"description": "Fries", "price": 4.00}], "tax": 1.32, "grandTotal": 17.82 }`
-                     }, {
-                         inline_data: {
-                             mime_type: imageBlob.type, // e.g., "image/jpeg"
-                             data: base64Data
+                 const requestBody = {
+                     contents: [{
+                         parts: [{
+                             // Updated prompt for better structure and clarity
+                             text: `Analyze this invoice image. Extract line items, including description and total price for each item. Also extract the overall tax amount and the final grand total. Structure the output as a JSON object with keys: "lineItems" (an array of objects, each with "description" and "price" as a number), "tax" (a number), and "grandTotal" (a number). If a value isn't found, represent it as null. Example: { "lineItems": [{"description": "Burger", "price": 12.50}, {"description": "Fries", "price": 4.00}], "tax": 1.32, "grandTotal": 17.82 }`
+                         }, {
+                             inline_data: {
+                                 mime_type: imageBlob.type, // e.g., "image/jpeg"
+                                 data: base64Data
+                             }
+                         }]
+                     }],
+                     generationConfig: {
+                        // Request JSON output directly if the model supports it reliably
+                        // Note: For gemini-pro-vision, this might not be directly supported in generationConfig.
+                        // The model usually outputs JSON within the text part if prompted correctly.
+                        // "response_mime_type": "application/json", // Remove if not supported by vision model
+                     }
+                 };
+
+                 try {
+                     const response = await fetch(`${apiUrl}?key=${apiKey}`, {
+                         method: 'POST',
+                         headers: {
+                             'Content-Type': 'application/json'
+                         },
+                         body: JSON.stringify(requestBody)
+                     });
+
+                      // Regardless of ok status, hide loading and close camera stream now
+                      // Do this *after* getting response but before processing it.
+                      if (loadingOverlay) loadingOverlay.classList.add('hidden');
+                      Scan.closeCameraStream();
+                      console.log("Stream closed and loading hidden after API response received.");
+
+
+                     if (!response.ok) {
+                         let errorMsg = 'Unknown API error';
+                         let errorData = null;
+                         try {
+                             errorData = await response.json();
+                             console.error("Gemini API Error Response:", errorData);
+                             errorMsg = errorData?.error?.message || `Status ${response.status}`;
+                         } catch (e) {
+                             // If parsing JSON fails, try reading as text
+                             const textResponse = await response.text();
+                             console.error("Could not parse API error response as JSON:", textResponse);
+                             errorMsg = `Status ${response.status} - ${textResponse.substring(0, 100)}`;
                          }
-                     }]
-                 }],
-                 generationConfig: {
-                    // Request JSON output directly if the model supports it reliably
-                    // Note: For gemini-pro-vision, this might not be directly supported in generationConfig.
-                    // The model usually outputs JSON within the text part if prompted correctly.
-                    // "response_mime_type": "application/json", // Remove if not supported by vision model
+                          // Re-throw a more informative error
+                         throw new Error(`API Error: ${errorMsg}`);
+                     }
+
+                     const data = await response.json();
+                     console.log("Gemini API Success Response:", data);
+
+                     // Process the response and show the review modal
+                     Scan.processGeminiResponse(data);
+                     resolve(); // Resolve the promise when processing is complete
+
+                 } catch (error) {
+                     console.error("Error calling or processing Gemini API response:", error);
+                     // Ensure UI reflects the error state properly
+                      UI.showToast(`Failed to process invoice: ${error.message}`, "error");
+                      // Ensure loading is hidden and stream closed on error (redundant check, but safe)
+                      if (loadingOverlay && !loadingOverlay.classList.contains('hidden')) loadingOverlay.classList.add('hidden');
+                      if (Scan.currentStream) Scan.closeCameraStream(); // Ensure closure if error happened before response handling
+                      reject(error); // Reject the promise with the error
                  }
              };
-
-             try {
-                 const response = await fetch(`${apiUrl}?key=${apiKey}`, {
-                     method: 'POST',
-                     headers: {
-                         'Content-Type': 'application/json'
-                     },
-                     body: JSON.stringify(requestBody)
-                 });
-
-                  // Regardless of ok status, hide loading and close camera stream now
-                  // Do this *after* getting response but before processing it.
-                  if (loadingOverlay) loadingOverlay.classList.add('hidden');
-                  Scan.closeCameraStream();
-                  console.log("Stream closed and loading hidden after API response received.");
-
-
-                 if (!response.ok) {
-                     let errorMsg = 'Unknown API error';
-                     let errorData = null;
-                     try {
-                         errorData = await response.json();
-                         console.error("Gemini API Error Response:", errorData);
-                         errorMsg = errorData?.error?.message || `Status ${response.status}`;
-                     } catch (e) {
-                         // If parsing JSON fails, try reading as text
-                         const textResponse = await response.text();
-                         console.error("Could not parse API error response as JSON:", textResponse);
-                         errorMsg = `Status ${response.status} - ${textResponse.substring(0, 100)}`;
-                     }
-                      // Re-throw a more informative error
-                     throw new Error(`API Error: ${errorMsg}`);
-                 }
-
-                 const data = await response.json();
-                 console.log("Gemini API Success Response:", data);
-
-                 // Process the response and show the review modal
-                 Scan.processGeminiResponse(data);
-
-             } catch (error) {
-                 console.error("Error calling or processing Gemini API response:", error);
-                 // Ensure UI reflects the error state properly
-                  UI.showToast(`Failed to process invoice: ${error.message}`, "error");
-                  // Ensure loading is hidden and stream closed on error (redundant check, but safe)
-                  if (loadingOverlay && !loadingOverlay.classList.contains('hidden')) loadingOverlay.classList.add('hidden');
-                  if (Scan.currentStream) Scan.closeCameraStream(); // Ensure closure if error happened before response handling
-             }
-         };
-         reader.onerror = (error) => {
-             console.error("Error converting Blob to Base64:", error);
-             UI.showToast("Failed to prepare image for scanning.", "error");
-             if (loadingOverlay) loadingOverlay.classList.add('hidden');
-             Scan.closeCameraStream();
-         };
+             reader.onerror = (error) => {
+                 console.error("Error converting Blob to Base64:", error);
+                 UI.showToast("Failed to prepare image for scanning.", "error");
+                 if (loadingOverlay) loadingOverlay.classList.add('hidden');
+                 Scan.closeCameraStream();
+                 reject(new Error("Failed to prepare image for scanning")); // Reject the promise with the error
+             };
+         });
      }
 
      /**
@@ -636,7 +650,6 @@ class Scan {
      */
     static handleImageUpload(event) {
         console.log("Handling image upload...");
-        const loadingOverlay = document.getElementById('scanLoadingOverlay');
 
         if (!event.target.files || event.target.files.length === 0) {
             console.warn("No file selected for upload.");
@@ -644,6 +657,20 @@ class Scan {
         }
 
         const file = event.target.files[0];
+        Scan.uploadImage(file);
+
+        // Reset the file input so the same file can be selected again if needed
+        event.target.value = '';
+    }
+
+    /**
+     * Processes an image file uploaded from the gallery.
+     * @param {File} file The image file to process.
+     * @returns {Promise<void>} A promise that resolves when the image is processed.
+     */
+    static async uploadImage(file) {
+        console.log("Processing uploaded image...");
+        const loadingOverlay = document.getElementById('scanLoadingOverlay');
 
         // Check if the file is an image
         if (!file.type.match('image.*')) {
@@ -657,54 +684,158 @@ class Scan {
             loadingOverlay.classList.remove('hidden');
         }
 
-        // Process the image file
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                // Create a canvas to draw the image
-                const canvas = document.createElement('canvas');
-                canvas.width = img.width;
-                canvas.height = img.height;
-
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0);
-
-                // Convert canvas to blob
-                canvas.toBlob(blob => {
-                    if (blob) {
-                        console.log(`Uploaded image processed as Blob, size: ${blob.size} bytes, type: ${blob.type}`);
-                        // Send the blob to the Gemini API using the existing method
-                        Scan.sendToGeminiAPI(blob);
-                    } else {
-                        console.error("Failed to create Blob from uploaded image.");
-                        UI.showToast("Failed to process uploaded image.", "error");
-                        if (loadingOverlay) loadingOverlay.classList.add('hidden');
-                    }
-                }, 'image/jpeg', 0.9);
-            };
-
-            img.onerror = () => {
-                console.error("Error loading the uploaded image.");
-                UI.showToast("Failed to load the uploaded image.", "error");
-                if (loadingOverlay) loadingOverlay.classList.add('hidden');
-            };
-
-            img.src = e.target.result;
-        };
-
-        reader.onerror = () => {
-            console.error("Error reading the uploaded file.");
-            UI.showToast("Failed to read the uploaded file.", "error");
+        try {
+            // Process the image file
+            const blob = await Scan.fileToBlob(file);
+            if (blob) {
+                console.log(`Uploaded image processed as Blob, size: ${blob.size} bytes, type: ${blob.type}`);
+                // Send the blob to the Gemini API using the existing method
+                Scan.sendToGeminiAPI(blob);
+            } else {
+                throw new Error("Failed to create Blob from uploaded image.");
+            }
+        } catch (error) {
+            console.error("Error processing uploaded image:", error);
+            UI.showToast(error.message || "Failed to process uploaded image.", "error");
             if (loadingOverlay) loadingOverlay.classList.add('hidden');
-        };
-
-        reader.readAsDataURL(file);
-
-        // Reset the file input so the same file can be selected again if needed
-        event.target.value = '';
+        }
     }
 
+    /**
+     * Converts a File object to a Blob using canvas.
+     * @param {File} file The file to convert.
+     * @returns {Promise<Blob>} A promise that resolves with the Blob.
+     * @private
+     */
+    static fileToBlob(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                const img = new Image();
+
+                img.onload = () => {
+                    // Create a canvas to draw the image
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+
+                    // Convert canvas to blob
+                    canvas.toBlob(blob => {
+                        if (blob) {
+                            resolve(blob);
+                        } else {
+                            reject(new Error("Failed to create Blob from canvas"));
+                        }
+                    }, 'image/jpeg', 0.9);
+                };
+
+                img.onerror = () => {
+                    reject(new Error("Error loading the uploaded image"));
+                };
+
+                img.src = e.target.result;
+            };
+
+            reader.onerror = () => {
+                reject(new Error("Error reading the uploaded file"));
+            };
+
+            reader.readAsDataURL(file);
+        });
+    }
+
+    /**
+     * Processes an image and extracts invoice data.
+     * @param {Blob} imageData The image data to process.
+     * @returns {Promise<ScanResult>} A promise that resolves with the scan result.
+     */
+    static async processImage(imageData) {
+        console.log("Processing image data...");
+        try {
+            // This is a wrapper around sendToGeminiAPI that returns the processed data
+            // instead of displaying it directly
+            return new Promise((resolve, reject) => {
+                // Create a custom event listener to capture the processed data
+                const captureProcessedData = (event) => {
+                    // Remove the event listener to avoid memory leaks
+                    document.removeEventListener('gemini-response-processed', captureProcessedData);
+                    resolve(event.detail);
+                };
+
+                // Add event listener to capture the processed data
+                document.addEventListener('gemini-response-processed', captureProcessedData, { once: true });
+
+                // Override the processGeminiResponse method temporarily to capture the data
+                const originalProcessMethod = Scan.processGeminiResponse;
+                Scan.processGeminiResponse = (responseData) => {
+                    try {
+                        // Extract the invoice data from the response
+                        const generatedContent = responseData?.candidates?.[0]?.content?.parts?.[0]?.text;
+                        let invoiceData;
+
+                        if (!generatedContent) {
+                            throw new Error("No invoice details generated by the API.");
+                        }
+
+                        try {
+                            const jsonMatch = generatedContent.match(/```json\s*([\s\S]*?)\s*```/);
+                            const jsonString = jsonMatch ? jsonMatch[1] : generatedContent;
+                            invoiceData = JSON.parse(jsonString);
+                        } catch (parseError) {
+                            throw new Error("Could not understand the invoice details format.");
+                        }
+
+                        // Dispatch event with the processed data
+                        document.dispatchEvent(new CustomEvent('gemini-response-processed', {
+                            detail: invoiceData
+                        }));
+
+                        // Call the original method to display the results
+                        originalProcessMethod.call(Scan, responseData);
+                    } catch (error) {
+                        // Restore the original method
+                        Scan.processGeminiResponse = originalProcessMethod;
+                        reject(error);
+                    }
+                };
+
+                // Send the image data to the API
+                Scan.sendToGeminiAPI(imageData).catch(error => {
+                    // Restore the original method
+                    Scan.processGeminiResponse = originalProcessMethod;
+                    reject(error);
+                });
+            });
+        } catch (error) {
+            console.error("Error processing image:", error);
+            throw error;
+        }
+    }
+
+    /**
+     * Displays the scan results in the review modal.
+     * @param {ScanResult} results The scan results to display.
+     */
+    static displayResults(results) {
+        console.log("Displaying scan results:", results);
+        // Create a mock response object that matches the structure expected by processGeminiResponse
+        const mockResponse = {
+            candidates: [{
+                content: {
+                    parts: [{
+                        text: JSON.stringify(results)
+                    }]
+                }
+            }]
+        };
+
+        // Use the existing method to display the results
+        Scan.processGeminiResponse(mockResponse);
+    }
 } // ========= End of Scan Class =========
 
 // Note: Event listener setup for the main scan button is handled in ui.js
