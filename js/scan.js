@@ -19,6 +19,8 @@ class Scan {
         const scanModal = document.getElementById('scanModal');
         const videoElement = document.getElementById('cameraFeed');
         const captureBtn = document.getElementById('captureScanBtn');
+        const uploadBtn = document.getElementById('uploadImageBtn');
+        const fileInput = document.getElementById('imageFileInput');
         const closeBtn = document.getElementById('closeScanModalBtn');
         const loadingOverlay = document.getElementById('scanLoadingOverlay');
 
@@ -33,7 +35,7 @@ class Scan {
              }
         };
 
-        if (!scanModal || !videoElement || !captureBtn || !closeBtn || !loadingOverlay) {
+        if (!scanModal || !videoElement || !captureBtn || !uploadBtn || !fileInput || !closeBtn || !loadingOverlay) {
             console.error("Scan modal elements not found in the DOM.");
             UI.showToast("Scan interface failed to load.", "error");
             cleanup(false); // Don't hide modal if it wasn't even found
@@ -46,8 +48,17 @@ class Scan {
         // Check for mediaDevices support
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             console.error("Browser API navigator.mediaDevices.getUserMedia not available");
-            UI.showToast("Camera access is not supported by your browser.", "error");
-            cleanup();
+            UI.showToast("Camera access is not supported by your browser. You can still upload images.", "warning");
+
+            // Setup upload functionality even if camera is not available
+            uploadBtn.onclick = () => fileInput.click();
+            fileInput.onchange = (e) => Scan.handleImageUpload(e);
+            closeBtn.onclick = () => Scan.closeCameraStream();
+
+            // Show the modal without camera
+            videoElement.style.display = 'none';
+            scanModal.classList.remove('hidden');
+            Scan.isInitiating = false;
             return;
         }
 
@@ -74,6 +85,8 @@ class Scan {
             // Assign event listeners (ensure they aren't duplicated if re-opening)
             // Use .onclick to ensure only one listener is present
             captureBtn.onclick = () => Scan.captureImage(videoElement); // Pass only video element
+            uploadBtn.onclick = () => fileInput.click(); // Trigger file input click
+            fileInput.onchange = (e) => Scan.handleImageUpload(e); // Handle file selection
             closeBtn.onclick = () => Scan.closeCameraStream(); // Close uses stored stream
 
             // Display the camera stream in the existing modal elements
@@ -98,25 +111,33 @@ class Scan {
             console.error("Error during scan initiation:", err);
             Scan.currentStream = null; // Clear stream ref on error
 
-            let message = "Could not access camera.";
+            let message = "Could not access camera. You can still upload images.";
             if (err.name === "NotAllowedError") {
-                message = "Camera access permission was denied. Please allow access in your browser settings.";
+                message = "Camera access permission was denied. You can still upload images.";
             } else if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
-                message = "No camera found on this device.";
+                message = "No camera found on this device. You can still upload images.";
             } else if (err.name === "NotReadableError" || err.name === "TrackStartError") {
-                message = "Camera might be already in use by another application.";
+                message = "Camera might be already in use by another application. You can still upload images.";
             } else if (err.name === "OverconstrainedError" || err.name === "ConstraintNotSatisfiedError") {
-                message = "Could not satisfy camera constraints (e.g., resolution).";
+                message = "Could not satisfy camera constraints. You can still upload images.";
             } else if (err.name === "AbortError") {
-                 message = "Camera start was interrupted. Please try again."; // More specific message
+                 message = "Camera start was interrupted. You can still upload images.";
                  console.warn("Video play() was aborted, likely by a new request or closing the modal early.");
             } else {
-                 message = `Camera error: ${err.name}`; // Generic for other errors
+                 message = `Camera error: ${err.name}. You can still upload images.`;
             }
 
-            UI.showToast(message, "error");
-            Scan.closeCameraStream(); // Ensure stream is closed on error
-            cleanup(); // Reset flag and hide modal
+            UI.showToast(message, "warning");
+
+            // Setup upload functionality even if camera access fails
+            uploadBtn.onclick = () => fileInput.click();
+            fileInput.onchange = (e) => Scan.handleImageUpload(e);
+            closeBtn.onclick = () => Scan.closeCameraStream();
+
+            // Show the modal without camera
+            videoElement.style.display = 'none';
+            scanModal.classList.remove('hidden');
+            Scan.isInitiating = false;
         }
         // Note: We no longer set Scan.isInitiating = false here, it's handled in success/error paths
     }
@@ -146,6 +167,7 @@ class Scan {
         if (videoElement) {
             videoElement.pause(); // Pause video
             videoElement.srcObject = null; // Release the stream reference
+            videoElement.style.display = ''; // Reset display style in case it was hidden
             console.log("Video element paused and srcObject set to null.");
         }
 
@@ -153,9 +175,15 @@ class Scan {
             scanModal.classList.add('hidden');
             console.log("Scan modal hidden.");
         }
-         if (loadingOverlay) {
+        if (loadingOverlay) {
             loadingOverlay.classList.add('hidden'); // Ensure loading is hidden when closing
-         }
+        }
+
+        // Reset file input if it exists
+        const fileInput = document.getElementById('imageFileInput');
+        if (fileInput) {
+            fileInput.value = ''; // Clear any selected file
+        }
 
          // Reset the initiation flag if the stream is closed.
          Scan.isInitiating = false;
@@ -601,6 +629,81 @@ class Scan {
          }
      }
 
+
+    /**
+     * Handles image upload from the gallery.
+     * @param {Event} event The file input change event.
+     */
+    static handleImageUpload(event) {
+        console.log("Handling image upload...");
+        const loadingOverlay = document.getElementById('scanLoadingOverlay');
+
+        if (!event.target.files || event.target.files.length === 0) {
+            console.warn("No file selected for upload.");
+            return;
+        }
+
+        const file = event.target.files[0];
+
+        // Check if the file is an image
+        if (!file.type.match('image.*')) {
+            console.error("Selected file is not an image.");
+            UI.showToast("Please select an image file.", "error");
+            return;
+        }
+
+        // Show loading overlay
+        if (loadingOverlay) {
+            loadingOverlay.classList.remove('hidden');
+        }
+
+        // Process the image file
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                // Create a canvas to draw the image
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+
+                // Convert canvas to blob
+                canvas.toBlob(blob => {
+                    if (blob) {
+                        console.log(`Uploaded image processed as Blob, size: ${blob.size} bytes, type: ${blob.type}`);
+                        // Send the blob to the Gemini API using the existing method
+                        Scan.sendToGeminiAPI(blob);
+                    } else {
+                        console.error("Failed to create Blob from uploaded image.");
+                        UI.showToast("Failed to process uploaded image.", "error");
+                        if (loadingOverlay) loadingOverlay.classList.add('hidden');
+                    }
+                }, 'image/jpeg', 0.9);
+            };
+
+            img.onerror = () => {
+                console.error("Error loading the uploaded image.");
+                UI.showToast("Failed to load the uploaded image.", "error");
+                if (loadingOverlay) loadingOverlay.classList.add('hidden');
+            };
+
+            img.src = e.target.result;
+        };
+
+        reader.onerror = () => {
+            console.error("Error reading the uploaded file.");
+            UI.showToast("Failed to read the uploaded file.", "error");
+            if (loadingOverlay) loadingOverlay.classList.add('hidden');
+        };
+
+        reader.readAsDataURL(file);
+
+        // Reset the file input so the same file can be selected again if needed
+        event.target.value = '';
+    }
 
 } // ========= End of Scan Class =========
 
