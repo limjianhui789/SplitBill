@@ -4,14 +4,12 @@ After=network.target
 
 [Service]
 Type=simple
-User=www-data
-WorkingDirectory=/path/to/your/splitbill/directory
+User=root
+WorkingDirectory=/www/wwwroot/SplitBillv2/deploy-server
 ExecStart=/usr/bin/node deploy-server.js
 Restart=on-failure
-Environment=PORT=9000
-Environment=WEBHOOK_SECRET=your-webhook-secret
-Environment=BRANCH=main
-# You can add more environment variables here
+Environment=NODE_ENV=production
+# Environment variables are loaded from .env file
 
 [Install]
 WantedBy=multi-user.target

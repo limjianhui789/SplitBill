@@ -21,53 +21,21 @@ This directory contains scripts to set up an automatic deployment server for Spl
 - Your SplitBill repository already cloned on the server
 - Sudo/root access on the server
 
-### Automatic Setup
+### Setup
 
-1. Navigate to your SplitBill repository directory on the server
-2. Make the setup script executable:
-   ```bash
-   chmod +x setup-deploy-server.sh
-   ```
-3. Run the setup script with sudo:
+1. Run the setup script with sudo:
    ```bash
    sudo ./setup-deploy-server.sh
    ```
-4. The script will:
+
+2. The script will:
+   - Create a separate directory for the deployment server at `/www/wwwroot/SplitBillv2/deploy-server`
    - Install required dependencies
    - Create a .env file with a randomly generated webhook secret
    - Set up a systemd service to keep the webhook server running
    - Start the webhook server
 
-### Manual Setup
-
-If you prefer to set things up manually:
-
-1. Install required npm packages:
-   ```bash
-   npm install express crypto dotenv
-   ```
-
-2. Create a `.env` file with the following content:
-   ```
-   PORT=9000
-   WEBHOOK_SECRET=your-secret-here
-   BRANCH=main
-   ```
-   Replace `your-secret-here` with a randomly generated string.
-
-3. Start the server:
-   ```bash
-   node deploy-server.js
-   ```
-
-4. For production use, set up the systemd service:
-   ```bash
-   # Edit the service file to update the WorkingDirectory
-   sudo cp splitbill-deploy.service /etc/systemd/system/
-   sudo systemctl daemon-reload
-   sudo systemctl enable splitbill-deploy.service
-   sudo systemctl start splitbill-deploy.service
-   ```
+3. After running the script, note the webhook secret that was generated. You'll need this to configure the GitHub webhook.
 
 ## Configuring GitHub Webhook
 
@@ -76,7 +44,7 @@ If you prefer to set things up manually:
 3. Configure the webhook:
    - Payload URL: `http://your-server-ip:9000/webhook`
    - Content type: `application/json`
-   - Secret: Use the same secret you configured in the `.env` file
+   - Secret: Use the webhook secret that was generated during setup
    - Events: Select "Just the push event"
    - Active: Check this box
 
@@ -91,7 +59,7 @@ If you prefer to set things up manually:
    ```
    or
    ```bash
-   cat logs/deploy-YYYY-MM-DD.log
+   cat /www/wwwroot/SplitBillv2/deploy-server/logs/deploy-YYYY-MM-DD.log
    ```
 
 3. You should see logs indicating that the webhook was received and the deployment process was executed
@@ -107,7 +75,7 @@ If you prefer to set things up manually:
 
 ### Deployment Failing
 
-- Check the logs: `cat logs/deploy-YYYY-MM-DD.log`
+- Check the logs: `cat /www/wwwroot/SplitBillv2/deploy-server/logs/deploy-YYYY-MM-DD.log`
 - Ensure the server has proper permissions to the repository directory
 - Verify that Git is properly configured on the server
 
@@ -118,6 +86,16 @@ If you prefer to set things up manually:
 - Regularly rotate the webhook secret
 - Run the server with minimal permissions necessary
 
-## Customizing the Deployment Process
+## Manual Restart
 
-You can customize the deployment process by editing the `deploy-server.js` file. Look for the section where the deployment commands are executed to add or modify steps as needed for your specific deployment requirements.
+If you need to restart the deployment server:
+
+```bash
+sudo systemctl restart splitbill-deploy.service
+```
+
+To check its status:
+
+```bash
+sudo systemctl status splitbill-deploy.service
+```

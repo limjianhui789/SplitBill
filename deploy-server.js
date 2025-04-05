@@ -1,17 +1,17 @@
 /**
  * GitHub Webhook Deployment Server for SplitBill
- * 
+ *
  * This script creates a simple server that listens for GitHub webhook events
  * and automatically pulls the latest code when a push event is received.
- * 
+ *
  * Usage:
- * 1. Install dependencies: npm install express crypto child_process
- * 2. Set environment variables (or create .env file):
+ * 1. Set environment variables (or create .env file):
  *    - WEBHOOK_SECRET: The secret configured in GitHub webhook
  *    - PORT: The port to run the server on (default: 9000)
- * 3. Run: node deploy-server.js
- * 
- * For production use, consider running this with PM2 or as a systemd service.
+ *    - PROJECT_DIR: The directory of the SplitBill project
+ * 2. Run: node deploy-server.js
+ *
+ * For production use, this should be run as a systemd service.
  */
 
 const express = require('express');
@@ -34,6 +34,7 @@ const app = express();
 const PORT = process.env.PORT || 9000;
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 const BRANCH = process.env.BRANCH || 'main'; // Default branch to deploy
+const PROJECT_DIR = process.env.PROJECT_DIR || '/www/wwwroot/SplitBillv2/SplitBill';
 
 // Ensure webhook secret is set
 if (!WEBHOOK_SECRET) {
@@ -56,7 +57,7 @@ function log(message) {
   const timestamp = new Date().toISOString();
   const logMessage = `[${timestamp}] ${message}`;
   console.log(logMessage);
-  
+
   // Also write to log file
   const logFile = path.join(logsDir, `deploy-${new Date().toISOString().split('T')[0]}.log`);
   fs.appendFileSync(logFile, logMessage + '\n');
@@ -72,15 +73,15 @@ function verifySignature(req) {
   // Create HMAC
   const hmac = crypto.createHmac('sha256', WEBHOOK_SECRET);
   const digest = 'sha256=' + hmac.update(JSON.stringify(req.body)).digest('hex');
-  
+
   return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
 }
 
 // Execute shell command and return a promise
-function executeCommand(command) {
+function executeCommand(command, workDir = __dirname) {
   return new Promise((resolve, reject) => {
-    log(`Executing: ${command}`);
-    exec(command, { maxBuffer: 1024 * 1024 }, (error, stdout, stderr) => {
+    log(`Executing: ${command} in ${workDir}`);
+    exec(command, { cwd: workDir, maxBuffer: 1024 * 1024 }, (error, stdout, stderr) => {
       if (error) {
         log(`Error: ${error.message}`);
         return reject(error);
@@ -124,12 +125,16 @@ app.post('/webhook', async (req, res) => {
     // Log the deployment
     log(`Deploying from ${branchRef} after push by ${payload.pusher.name}`);
 
-    // Execute deployment steps
-    await executeCommand('git fetch --all');
-    await executeCommand(`git reset --hard origin/${BRANCH}`);
-    await executeCommand('git clean -f -d');
-    await executeCommand('npm install');
-    await executeCommand('npm run build');
+    // Execute deployment steps in the project directory
+    await executeCommand('git fetch --all', PROJECT_DIR);
+    await executeCommand(`git reset --hard origin/${BRANCH}`, PROJECT_DIR);
+    await executeCommand('git clean -f -d', PROJECT_DIR);
+
+    // Only run npm commands if package.json exists
+    if (fs.existsSync(path.join(PROJECT_DIR, 'package.json'))) {
+      await executeCommand('npm install --no-fund --no-audit --legacy-peer-deps', PROJECT_DIR);
+      await executeCommand('npm run build', PROJECT_DIR);
+    }
 
     log('Deployment completed successfully');
   } catch (error) {
@@ -146,4 +151,5 @@ app.get('/health', (req, res) => {
 app.listen(PORT, () => {
   log(`Webhook server listening on port ${PORT}`);
   log(`Webhook URL: http://your-server-ip:${PORT}/webhook`);
+  log(`Project directory: ${PROJECT_DIR}`);
 });
