@@ -29,6 +29,7 @@ module.exports = {
           dark: { // Dark theme specific colors
             bg: '#121214',
             card: '#1E1E24',
+            input: '#2A2A32', // Added for input fields
           },
           gray: { // Neutral gray scale (Tailwind default)
             50: '#F9FAFB',

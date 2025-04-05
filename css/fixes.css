@@ -7,6 +7,12 @@ html:not(.dark) #saveBillBtn i {
   color: var(--text-primary) !important; /* Dark text on light purple/green */
 }
 
+/* Fix for dark mode input fields - ensure text color is appropriate */
+.dark .dark\:bg-dark-input {
+  background-color: #2A2A32 !important;
+  color: #9CA3AF !important; /* Medium gray for better readability in dark mode */
+}
+
 /* Fix for dropdown z-index issues (Ensuring it's above other elements) */
 .name-dropdown {
   /* Basic dropdown styles */

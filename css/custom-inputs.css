@@ -1,0 +1,19 @@
+/* Custom input styles for better dark mode appearance */
+.dark-input-fix {
+  background-color: #2A2A32 !important;
+  color: #9CA3AF !important; /* Medium gray for better readability in dark mode */
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Apply this class to any input that needs fixing in dark mode */
+.dark .dark-input-fix {
+  background-color: #2A2A32 !important;
+  color: #9CA3AF !important;
+}
+
+/* Fix for the specific class used in the HTML */
+.dark input.dark\:text-white,
+.dark textarea.dark\:text-white,
+.dark select.dark\:text-white {
+  color: #9CA3AF !important; /* Override the white text with medium gray */
+}

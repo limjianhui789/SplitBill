@@ -9,6 +9,13 @@ input, textarea, select {
   font-size: 0.875rem; /* Add default font size */
 }
 
+/* Fix for dark theme input fields to ensure text is visible with proper contrast */
+.dark input, .dark textarea, .dark select {
+  background-color: #2A2A32; /* Slightly lighter than dark-card for better contrast */
+  color: #E5E7EB; /* Light gray instead of pure white for better readability */
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
 input:focus, textarea:focus, select:focus {
   border-color: var(--accent-purple);
   box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
