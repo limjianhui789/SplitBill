@@ -48,8 +48,15 @@ app.use(express.json());
 
 // Create logs directory if it doesn't exist
 const logsDir = path.join(__dirname, 'logs');
-if (!fs.existsSync(logsDir)) {
-  fs.mkdirSync(logsDir);
+
+// Ensure logs directory exists with proper permissions
+try {
+  if (!fs.existsSync(logsDir)) {
+    console.log(`Creating logs directory at ${logsDir}`);
+    fs.mkdirSync(logsDir, { recursive: true });
+  }
+} catch (error) {
+  console.error(`Failed to create logs directory: ${error.message}`);
 }
 
 // Log function that writes to file and console
@@ -58,9 +65,18 @@ function log(message) {
   const logMessage = `[${timestamp}] ${message}`;
   console.log(logMessage);
 
-  // Also write to log file
-  const logFile = path.join(logsDir, `deploy-${new Date().toISOString().split('T')[0]}.log`);
-  fs.appendFileSync(logFile, logMessage + '\n');
+  // Try to write to log file, but continue if it fails
+  try {
+    // Ensure logs directory exists before writing
+    if (!fs.existsSync(logsDir)) {
+      fs.mkdirSync(logsDir, { recursive: true });
+    }
+
+    const logFile = path.join(logsDir, `deploy-${new Date().toISOString().split('T')[0]}.log`);
+    fs.appendFileSync(logFile, logMessage + '\n');
+  } catch (error) {
+    console.error(`Failed to write to log file: ${error.message}`);
+  }
 }
 
 // Verify GitHub webhook signature
@@ -80,18 +96,31 @@ function verifySignature(req) {
 // Execute shell command and return a promise
 function executeCommand(command, workDir = __dirname) {
   return new Promise((resolve, reject) => {
-    log(`Executing: ${command} in ${workDir}`);
-    exec(command, { cwd: workDir, maxBuffer: 1024 * 1024 }, (error, stdout, stderr) => {
-      if (error) {
-        log(`Error: ${error.message}`);
-        return reject(error);
+    try {
+      // Verify the working directory exists
+      if (!fs.existsSync(workDir)) {
+        const errorMsg = `Working directory does not exist: ${workDir}`;
+        log(errorMsg);
+        return reject(new Error(errorMsg));
       }
-      if (stderr) {
-        log(`stderr: ${stderr}`);
-      }
-      log(`stdout: ${stdout}`);
-      resolve(stdout);
-    });
+
+      log(`Executing: ${command} in ${workDir}`);
+      exec(command, { cwd: workDir, maxBuffer: 1024 * 1024 }, (error, stdout, stderr) => {
+        if (error) {
+          log(`Error: ${error.message}`);
+          return reject(error);
+        }
+        if (stderr) {
+          log(`stderr: ${stderr}`);
+        }
+        log(`stdout: ${stdout}`);
+        resolve(stdout);
+      });
+    } catch (execError) {
+      const errorMsg = `Failed to execute command: ${execError.message}`;
+      log(errorMsg);
+      reject(execError);
+    }
   });
 }
 
@@ -128,6 +157,18 @@ app.post('/webhook', async (req, res) => {
     // Execute deployment steps in the project directory
     await executeCommand('git fetch --all', PROJECT_DIR);
     await executeCommand(`git reset --hard origin/${BRANCH}`, PROJECT_DIR);
+
+    // Create logs directory if it was removed by git clean
+    try {
+      if (!fs.existsSync(logsDir)) {
+        log('Recreating logs directory that may have been removed by git operations');
+        fs.mkdirSync(logsDir, { recursive: true });
+      }
+    } catch (error) {
+      console.error(`Failed to recreate logs directory: ${error.message}`);
+    }
+
+    // Run git clean with caution
     await executeCommand('git clean -f -d', PROJECT_DIR);
 
     // Only run npm commands if package.json exists
@@ -143,7 +184,7 @@ app.post('/webhook', async (req, res) => {
 });
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/health', (_, res) => {
   res.status(200).send('Webhook server is running');
 });
 
