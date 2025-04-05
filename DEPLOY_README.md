@@ -79,6 +79,20 @@ This directory contains scripts to set up an automatic deployment server for Spl
 - Ensure the server has proper permissions to the repository directory
 - Verify that Git is properly configured on the server
 
+### Dependency Conflicts
+
+The setup script and deployment process use the `--legacy-peer-deps` flag when installing npm packages to bypass dependency conflicts. This is particularly important for this project because:
+
+- The project uses tailwindcss@3.x
+- But tailwind-scrollbar@4.0.2 requires tailwindcss@4.x
+
+If you encounter npm dependency errors during deployment, check the logs and you may need to manually run:
+
+```bash
+cd /www/wwwroot/SplitBillv2/SplitBill
+npm install --no-fund --no-audit --legacy-peer-deps
+```
+
 ## Security Considerations
 
 - The webhook server should ideally be behind a reverse proxy with HTTPS

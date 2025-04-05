@@ -56,7 +56,7 @@ EOF
 
 # Install required npm packages
 echo "Installing required npm packages..."
-npm install
+npm install --no-fund --no-audit --legacy-peer-deps
 
 # Create deployment server script
 echo "Creating deployment server script..."
