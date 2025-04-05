@@ -260,8 +260,9 @@
 
 
   <!-- Settings Modal -->
-  <div id="settingsModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
-    <div class="relative w-full max-w-md bg-white dark:bg-dark-card shadow-xl rounded-2xl modal-content" data-aos="fade-up">
+  <div id="settingsModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+    <div class="flex items-center justify-center p-4 h-full w-full">
+      <div class="relative w-full max-w-md bg-white dark:bg-dark-card shadow-xl rounded-2xl modal-content" data-aos="fade-up">
        <div class="p-6 space-y-6">
         <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-4">
           <h3 class="text-lg font-heading font-semibold text-gray-900 dark:text-white leading-snug flex items-center gap-2">
@@ -316,12 +317,14 @@
           </button>
         </div>
       </div>
+      </div>
     </div>
   </div>
 
   <!-- History Modal -->
-  <div id="historyModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
-     <div class="relative w-full max-w-4xl bg-white dark:bg-dark-card shadow-xl rounded-2xl modal-content" data-aos="fade-up">
+  <div id="historyModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+    <div class="flex items-center justify-center p-4 h-full w-full">
+      <div class="relative w-full max-w-4xl bg-white dark:bg-dark-card shadow-xl rounded-2xl modal-content" data-aos="fade-up">
        <div class="p-6 space-y-6">
          <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-4">
           <h3 class="text-lg font-heading font-semibold text-gray-900 dark:text-white leading-snug flex items-center gap-2">
@@ -357,12 +360,14 @@
           </div>
         </div>
        </div>
+      </div>
     </div>
   </div>
 
   <!-- Group Management Modal -->
-  <div id="groupModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
-     <div class="relative w-full max-w-lg bg-white dark:bg-dark-card shadow-xl rounded-2xl modal-content" data-aos="fade-up">
+  <div id="groupModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+    <div class="flex items-center justify-center p-4 h-full w-full">
+      <div class="relative w-full max-w-lg bg-white dark:bg-dark-card shadow-xl rounded-2xl modal-content" data-aos="fade-up">
        <div class="p-6 space-y-6">
          <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-4">
           <h3 class="text-lg font-heading font-semibold text-gray-900 dark:text-white leading-snug flex items-center gap-2">
@@ -398,12 +403,14 @@
           </button>
         </div>
       </div>
+      </div>
     </div>
   </div>
 
   <!-- Templates Modal -->
-  <div id="templateModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
-    <div class="relative w-full max-w-lg bg-white dark:bg-dark-card shadow-xl rounded-2xl modal-content" data-aos="fade-up">
+  <div id="templateModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+    <div class="flex items-center justify-center p-4 h-full w-full">
+      <div class="relative w-full max-w-lg bg-white dark:bg-dark-card shadow-xl rounded-2xl modal-content" data-aos="fade-up">
       <div class="p-6 space-y-6">
         <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-4">
           <h3 class="text-lg font-heading font-semibold text-gray-900 dark:text-white leading-snug flex items-center gap-2">
@@ -436,13 +443,15 @@
           </div>
         </div>
       </div>
+      </div>
     </div>
   </div>
 
 
   <!-- Camera Scan Modal -->
-  <div id="scanModal" class="hidden fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm overflow-y-auto h-full w-full z-[5500] flex items-center justify-center p-4">
-    <div class="relative w-full max-w-lg bg-white dark:bg-dark-card shadow-xl rounded-2xl modal-content">
+  <div id="scanModal" class="hidden fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm overflow-y-auto h-full w-full z-[5500]">
+    <div class="flex items-center justify-center p-4 h-full w-full">
+      <div class="relative w-full max-w-lg bg-white dark:bg-dark-card shadow-xl rounded-2xl modal-content">
       <div class="p-6 space-y-4">
         <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-3">
           <h3 class="text-lg font-heading font-semibold text-gray-900 dark:text-white leading-snug flex items-center gap-2">
@@ -455,7 +464,7 @@
 
         <div class="relative aspect-video bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
           <video id="cameraFeed" class="absolute top-0 left-0 w-full h-full object-cover" playsinline autoplay muted></video>
-          <div id="scanLoadingOverlay" class="hidden absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white">
+          <div id="scanLoadingOverlay" class="hidden absolute inset-0 bg-black bg-opacity-50 text-white">
              <i class="ti ti-loader animate-spin text-4xl"></i>
           </div>
         </div>
@@ -470,12 +479,14 @@
           <input type="file" id="imageFileInput" accept="image/*" class="hidden" />
         </div>
       </div>
+      </div>
     </div>
   </div>
 
   <!-- Scan Review Modal -->
-  <div id="scanReviewModal" class="hidden fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm overflow-y-auto h-full w-full z-[5400] flex items-center justify-center p-4">
-    <div class="relative w-full max-w-xl bg-white dark:bg-dark-card shadow-xl rounded-2xl modal-content">
+  <div id="scanReviewModal" class="hidden fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm overflow-y-auto h-full w-full z-[5400]">
+    <div class="flex items-center justify-center p-4 h-full w-full">
+      <div class="relative w-full max-w-xl bg-white dark:bg-dark-card shadow-xl rounded-2xl modal-content">
       <div class="p-6 space-y-4">
         <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-3">
           <h3 class="text-lg font-heading font-semibold text-gray-900 dark:text-white leading-snug flex items-center gap-2">
@@ -501,6 +512,7 @@
           </button>
           <button id="finishReviewBtn" class="btn btn-secondary">Done Reviewing</button>
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -554,7 +566,7 @@
          }
 
          // Ensure active state is correct
-         UI.updateActiveNav();
+         UI.setActiveNavItem();
 
       } else {
          console.warn('Bottom navigation element still not found.');

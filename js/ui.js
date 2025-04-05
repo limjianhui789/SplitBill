@@ -498,12 +498,16 @@
          if (!modal) {
              modal = document.createElement('div');
              modal.id = 'settingsModal';
-             modal.className = 'fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm overflow-y-auto h-full w-full z-[5000] flex items-center justify-center p-4 hidden'; // Start hidden, added padding
+             modal.className = 'fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm overflow-y-auto h-full w-full z-[5000] hidden'; // Start hidden
              modal.setAttribute('role', 'dialog');
              modal.setAttribute('aria-modal', 'true');
              modal.setAttribute('aria-labelledby', 'settingsModalTitle');
 
-             modal.innerHTML = `
+             // Add flex container inside modal for centering
+             const flexContainer = document.createElement('div');
+             flexContainer.className = 'flex items-center justify-center p-4 h-full w-full';
+
+             flexContainer.innerHTML = `
                  <div class="bg-white dark:bg-dark-card rounded-2xl shadow-xl w-full max-w-md transform transition-all duration-300 ease-out scale-95 opacity-0" role="document">
                      <!-- Header -->
                      <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 p-4">
@@ -530,7 +534,7 @@
 
                          <!-- Currency Select -->
                          <div>
-                             <label for="currencySelect" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                             <label for="currencySelect" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
                                  <i class="ti ti-currency-dollar mr-2"></i> Currency
                              </label>
                              <select id="currencySelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg dark:bg-dark-input dark:border-gray-600 dark:text-white focus:outline-none focus:ring-1 focus:ring-accent-purple focus:border-accent-purple">
@@ -546,7 +550,7 @@
 
                          <!-- Budget Settings -->
                          <div>
-                             <label for="monthlyBudget" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                             <label for="monthlyBudget" class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
                                  <i class="ti ti-calendar-stats mr-2"></i> Monthly Budget Goal (Optional)
                              </label>
                               <div class="relative">
@@ -557,7 +561,7 @@
 
                          <!-- Data Management -->
                          <div>
-                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                             <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
                                  <i class="ti ti-database-cog mr-2"></i> Data Management
                              </label>
                              <button id="clearHistoryBtn" class="w-full btn btn-danger flex items-center justify-center">
@@ -579,7 +583,8 @@
                  </div>
              `;
 
-             document.body.appendChild(modal);
+             modal.appendChild(flexContainer);
+            document.body.appendChild(modal);
 
              // --- Add Event Listeners After Creation ---
              // Dark Mode Toggle

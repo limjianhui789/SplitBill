@@ -5,13 +5,13 @@ const Utils = {
   formatCurrency: function(value) {
     const currencySymbol = localStorage.getItem('currencySymbol') || '$';
     const symbolPosition = localStorage.getItem('symbolPosition') || 'prefix';
-    
+
     if (isNaN(value)) {
       value = 0;
     }
-    
+
     const formattedValue = value.toFixed(2);
-    
+
     if (symbolPosition === 'prefix') {
       return currencySymbol + formattedValue;
     } else {
@@ -29,28 +29,28 @@ const Utils = {
       // Otherwise, attempt to convert to string or return 0
       value = String(value);
     }
-    
+
     // Remove common currency symbols ($ sign, etc.) and thousands separators (commas)
     // Allow only digits and a single decimal point
-    const numericString = value.replace(/[^\d.-]/g, ''); 
-    
+    const numericString = value.replace(/[^\d.-]/g, '');
+
     // Parse the cleaned string as a float
     const parsedValue = parseFloat(numericString);
-    
+
     // Return the parsed number, or 0 if parsing failed
     return isNaN(parsedValue) ? 0 : parsedValue;
   },
-  
+
   // Show toast notification
   showToast: function(message, type = 'info') {
     const toastContainer = document.getElementById('toastContainer');
-    
+
     const toast = document.createElement('div');
     toast.className = `py-2 px-4 rounded-lg shadow-lg text-white ${type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500'}`;
     toast.textContent = message;
-    
+
     toastContainer.appendChild(toast);
-    
+
     // Remove toast after 3 seconds
     setTimeout(() => {
       toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
@@ -59,13 +59,13 @@ const Utils = {
       }, 300);
     }, 3000);
   },
-  
+
   // Handle calculator-like input in price fields
   handleCalculatorInput: function(input) {
     const expression = input.value;
     try {
       // Simple calculator functionality
-      if (expression.includes('+') || expression.includes('-') || 
+      if (expression.includes('+') || expression.includes('-') ||
           expression.includes('*') || expression.includes('/')) {
         // Using Function constructor to safely evaluate the expression
         const result = new Function('return ' + expression)();
@@ -73,7 +73,7 @@ const Utils = {
           input.value = result;
         }
       }
-      
+
       // Auto-calculate if enabled
       if (localStorage.getItem('autoCalculate') === 'true') {
         Calculator.calculate();
@@ -106,5 +106,15 @@ const Utils = {
       };
       return chars_to_replace[tag] || tag;
     });
+  },
+
+  // Debounce function to limit how often a function can be called
+  debounce: function(func, wait = 300) {
+    let timeout;
+    return function(...args) {
+      const context = this;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), wait);
+    };
   }
-}; 
+};

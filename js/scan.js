@@ -11,7 +11,6 @@ try {
     import('./config.js')
         .then(module => {
             Config = module.default;
-            console.log('Config loaded successfully:', Config);
         })
         .catch(error => {
             console.error('Error loading config module:', error);
