@@ -4,6 +4,32 @@
 // This ensures it persists even if the class property is cleared
 let globalLastImageBlob = null;
 
+// Import config (will be available after build process)
+let Config;
+try {
+    // Try to import the config module
+    import('./config.js')
+        .then(module => {
+            Config = module.default;
+            console.log('Config loaded successfully:', Config);
+        })
+        .catch(error => {
+            console.error('Error loading config module:', error);
+            // Fallback to default values
+            Config = {
+                GEMINI_API_KEY: "AIzaSyAa0qV2hBkflFh0rSg2jmUQTL_W6bJcEc0",
+                GEMINI_API_URL: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+            };
+        });
+} catch (error) {
+    console.error('Error importing config module:', error);
+    // Fallback to default values
+    Config = {
+        GEMINI_API_KEY: "AIzaSyAa0qV2hBkflFh0rSg2jmUQTL_W6bJcEc0",
+        GEMINI_API_URL: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+    };
+}
+
 class Scan {
     static currentStream = null; // Store the current stream to close it later
     static isInitiating = false; // Flag to prevent concurrent initiations
@@ -281,11 +307,9 @@ class Scan {
          const loadingOverlay = document.getElementById('scanLoadingOverlay');
 
          return new Promise((resolve, reject) => {
-             // --- Placeholder for actual API call ---
-             // IMPORTANT: Replace "YOUR_GEMINI_API_KEY" with a secure method
-             // of retrieving your API key (e.g., from a config file, backend proxy).
-             const apiKey = "AIzaSyAa0qV2hBkflFh0rSg2jmUQTL_W6bJcEc0"; // <<< REPLACE THIS >>>
-             const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"; // Updated model
+             // Get API settings from Config
+             const apiKey = Config?.GEMINI_API_KEY || "AIzaSyAa0qV2hBkflFh0rSg2jmUQTL_W6bJcEc0"; // Fallback to default if Config not loaded yet
+             const apiUrl = Config?.GEMINI_API_URL || "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"; // Fallback to default
 
              if (apiKey === "YOUR_GEMINI_API_KEY" || !apiKey) {
                  console.error("Gemini API Key not configured.");
