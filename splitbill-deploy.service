@@ -1,0 +1,17 @@
+[Unit]
+Description=SplitBill GitHub Webhook Deployment Server
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/path/to/your/splitbill/directory
+ExecStart=/usr/bin/node deploy-server.js
+Restart=on-failure
+Environment=PORT=9000
+Environment=WEBHOOK_SECRET=your-webhook-secret
+Environment=BRANCH=main
+# You can add more environment variables here
+
+[Install]
+WantedBy=multi-user.target

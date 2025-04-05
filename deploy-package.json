@@ -1,0 +1,18 @@
+{
+  "name": "splitbill-deploy-server",
+  "version": "1.0.0",
+  "description": "GitHub webhook deployment server for SplitBill",
+  "main": "deploy-server.js",
+  "scripts": {
+    "start": "node deploy-server.js",
+    "setup": "bash setup-deploy-server.sh"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "private": true
+}
